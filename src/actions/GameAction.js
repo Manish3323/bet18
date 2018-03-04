@@ -91,7 +91,6 @@ export const awayScoreChange = (text) => {
     payload: text
   }
 }
-}
 /**
  * 
  * @desc updates the previous prediction by the passed params on firebase databasse
