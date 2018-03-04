@@ -1,9 +1,10 @@
-import { LOAD_GAMES,SELECT_GAME,LOAD_TEAMS } from '../actions/types';
+import { LOAD_GAMES,SELECT_GAME,LOAD_TEAMS,HOME_SCORE_CHANGED,AWAY_SCORE_CHANGED,LOAD_PREDICTIONS } from '../actions/types';
 
 const INITIAL_STATE = {
     matches:{},
     selectedGame:{},
-    teams:[]
+    teams:[],
+    predictions:[]
 }
 
 export default GameReducer= (state=INITIAL_STATE,action) =>{
@@ -13,9 +14,24 @@ export default GameReducer= (state=INITIAL_STATE,action) =>{
         case SELECT_GAME:
             return { ...state,selectedGame:action.payload}
         case LOAD_TEAMS:
-            {
-                return { ...state,teams:action.payload}
+            return { ...state,teams:action.payload}
+        case HOME_SCORE_CHANGED:{
+            return { ...state,selectedGame:{
+                    ...state.selectedGame,homeScore:action.payload
+                    }
+                }
             }
+        case AWAY_SCORE_CHANGED:{
+            return { ...state,selectedGame:{
+                    ...state.selectedGame,awayScore:action.payload 
+                }
+            }
+        }
+
+        case LOAD_PREDICTIONS : {
+            console.log(action.payload);
+            return { ...state,predictions:action.payload }
+        }
         default: return state;
         
     }

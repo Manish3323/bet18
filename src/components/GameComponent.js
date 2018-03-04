@@ -9,7 +9,7 @@ import { findByProp,convertDateTimeToDate,convertDateTimeToTime } from '../Utili
 class GameComponent extends Component{
     componentObject = {}
     onRowSelect(){
-        this.props.selectGame(this.props.match);
+        this.props.selectGame(this.componentObject);
         Actions.selectedGame();
     }
     componentWillMount(){
@@ -19,19 +19,17 @@ class GameComponent extends Component{
         this.wrapUpProperties();
     }
     wrapUpProperties =()=> {
-        const { name, home_team, away_team,date} = this.props.match;
+        const { name, home_team, away_team,date } = this.props.match;
         const { teams } = this.props; 
         this.componentObject = {
-            matchNumber:name,
+            matchId:name,
             homeTeam: findByProp(teams,'id',home_team) || " ",
             awayTeam: findByProp(teams,'id',away_team) || " ",
-            date: convertDateTimeToDate(date),
-            time: convertDateTimeToTime(date)
+            date: convertDateTimeToDate(date,'dd/MM/YYYY'),
+            time: convertDateTimeToTime(date,'HH:mm')
         }
-        console.log('component object',this.componentObject);
     }
     renderText(teamsText){
-        console.log(teamsText)
         if(teamsText !== undefined && teamsText !== null && teamsText !== " "){
             return teamsText.name
         }else{
@@ -39,13 +37,13 @@ class GameComponent extends Component{
         }
     }
     render(){
-        const { matchNumber, homeTeam, awayTeam,date,time} = this.componentObject;
+        const { matchId, homeTeam, awayTeam,date,time} = this.componentObject;
         return(
             <TouchableWithoutFeedback onPress={this.onRowSelect.bind(this)}>
                 <View>
                     <Card> 
                         <CardSection style={{alignItems:'flex-start'}}>
-                            <Text> Game {matchNumber}</Text> 
+                            <Text> Game {matchId}</Text> 
                             <Text> {date} - {time} </Text> 
                             <Text> { this.renderText(homeTeam) } V/S {  this.renderText(awayTeam) } </Text>
                         </CardSection>
