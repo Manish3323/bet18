@@ -7,12 +7,13 @@ import { Actions } from 'react-native-router-flux';
 import { findByProp,convertDateTimeToDate,convertDateTimeToTime } from '../Utility';
 
 class GameComponent extends Component{
-    componentObject = {}
+   
     onRowSelect(){
         this.props.selectGame(this.componentObject);
         Actions.selectedGame();
     }
     componentWillMount(){
+        this.componentObject = {}
        // this.wrapUpProperties();
     }
     componentWillReceiveProps(){
