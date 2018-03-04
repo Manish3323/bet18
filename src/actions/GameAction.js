@@ -1,96 +1,135 @@
-import { LOAD_GAMES, SELECT_GAME,GROUPS_URL,TEAMS_URL,LOAD_TEAMS,AWAY_SCORE_CHANGED,PREDICTIONS_URL,HOME_SCORE_CHANGED,USERS_URL,LOAD_PREDICTIONS } from './types';
-import firebase from 'firebase';
-import { ObjectsToArray } from '../Utility';
-import { Alert } from 'react-native';
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS } from './types'
+import firebase from 'firebase'
+import { ObjectsToArray } from '../Utility'
+import { Alert } from 'react-native'
 
-
-export const loadGames = ({groupCode,matchId}) => {
-    let url = GROUPS_URL;
-    if(groupCode != ''){
-        url = url +'/'+ groupCode;
-    }
-    else if(groupCode!= '' && matchId!=''){
-        url = url + '/'+ groupCode +'/'+ matchId; 
-    }
-    return (dispatch)  => {
-        firebase.database().ref(url)
-        .on('value',(snapshot)=>{
-            let array = ObjectsToArray(snapshot.val());
-            dispatch({type:LOAD_GAMES,payload:array});
-        })
-    }
+/**
+ * @desc fetch games either for a group or a specific game by passing both matchid and groupid
+ * @param {groupCode} groupCode e.g Group a,b,c...g
+ * @param {matchId} matchId e.g unique match id for each match to be played in worldcup
+ * @returns array of matches containing object(s)
+ * @desc returned object will have following properties
+ * @desc matchid,homeTeam,awayTeam,date,finished,stadium,type
+ */
+export const loadGames = ({groupCode, matchId}) => {
+  let url = GROUPS_URL
+  if (groupCode !== '') {
+    url = url + '/' + groupCode
+  } else if (groupCode !== '' && matchId !== '') {
+    url = url + '/' + groupCode + '/' + matchId
+  }
+  return (dispatch) => {
+    firebase.database().ref(url)
+      .on('value', (snapshot) => {
+        let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOAD_GAMES, payload: array})
+      })
+  }
 }
+/**
+ * @desc fetchs all the 32 particiating teams in the world cup
+ * @desc returned list will contain 32 objects
+ * @desc each object will have following properties
+ * @desc id=[1,2,3,...],iso=['sa','ru','ar',....],name=['saudi arabia','russia','argentina',....]
+ */
 export const loadTeams = () => {
-    let url = TEAMS_URL;
-    return (dispatch)  => {
-        firebase.database().ref(url)
-        .on('value',(snapshot)=>{
-            let array = ObjectsToArray(snapshot.val());
-            dispatch({type:LOAD_TEAMS,payload:array});
-        })
-    }  
+  let url = TEAMS_URL
+  return (dispatch) => {
+    firebase.database().ref(url)
+      .on('value', (snapshot) => {
+        let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOAD_TEAMS, payload: array})
+      })
+  }
 }
-
+/**
+  * @desc this action is called when a single match is selected
+  * @desc which updates the redux store having Game.selectedGame property
+*/
 export const selectGame = (match) => {
-    return {
-        type:SELECT_GAME,
-        payload:match
-    }
+  return {
+    type: SELECT_GAME,
+    payload: match
+  }
 }
+
+/**
+ * @desc loads all the previous predictions for the current user
+ * @desc and continous watching over the /users/${uid}/predictions path for any insertion or updation at this path
+ * @desc and updates the redux store Game.predictions propterty for the current loggedin user
+ */
 export const loadPredictions = () => {
-    const user  = firebase.auth().currentUser;
-    let url = USERS_URL+'/'+user.uid+PREDICTIONS_URL;
-    return (dispatch)  => {
-        firebase.database().ref(url)
-        .on('value',(snapshot)=>{
-            let array = ObjectsToArray(snapshot.val());
-            dispatch({type:LOAD_PREDICTIONS,payload:array});
-        })
-    }  
+  const user = firebase.auth().currentUser
+  let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL
+  return (dispatch) => {
+    firebase.database().ref(url)
+      .on('value', (snapshot) => {
+        let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOAD_PREDICTIONS, payload: array})
+      })
+  }
 }
-
+/**
+ * 
+ * @param {Score of Home Team} text
+ * @desc updates the redux store
+ */
 export const homeScoreChange = (text) => {
-    return {
-        type:HOME_SCORE_CHANGED,
-        payload:text
-    }
+  return {
+    type: HOME_SCORE_CHANGED,
+    payload: text
+  }
 }
-
+/**
+ * 
+ * @param {Score of Away Team} text
+ * @desc updates the redux store
+ */
 export const awayScoreChange = (text) => {
-    return {
-        type:AWAY_SCORE_CHANGED,
-        payload:text
-    }
+  return {
+    type: AWAY_SCORE_CHANGED,
+    payload: text
+  }
 }
-export const updatePrediction = (matchId,homeScore,awayScore,predictionKey)=>{
-    return (dispatch) => {
-        const user  = firebase.auth().currentUser;
-        let url = USERS_URL+'/'+user.uid+PREDICTIONS_URL+'/'+predictionKey;
-        firebase.database().ref(url)
-        .set({
-            uid:user.uid,
-            matchId:matchId,
-            homeScore:homeScore,
-            awayScore:awayScore
-        },(data)=>{
-            Alert.alert('Saved');
-        });
-    }
+}
+/**
+ * 
+ * @desc updates the previous prediction by the passed param
+ * @desc /users/${uid}/predictions/${predictionkey} this path is updated
+ * @param matchId string - the match on which the prediction is made
+ * @param homeScore string - predicted score for home team
+ * @param awayScore string - predicted score for away team
+ * @param predictionKey string - unique key generated by firebase for each prediction path  for e.g : /users/${uid}/predictions/${predictionkey}
+ */
+export const updatePrediction = (matchId, homeScore, awayScore, predictionKey) => {
+  return (dispatch) => {
+    const user = firebase.auth().currentUser
+    let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL + '/' + predictionKey
+    firebase.database().ref(url)
+      .set({
+        uid: user.uid,
+        matchId: matchId,
+        homeScore: homeScore,
+        awayScore: awayScore
+      }, (data) => {
+        Alert.alert('Saved')
+      })
+  }
 }
 
-export const savePrediction = (matchId,homeScore,awayScore)=>{
-    return (dispatch) => {
-        const user  = firebase.auth().currentUser;
-        let url = USERS_URL+'/'+user.uid+PREDICTIONS_URL;
-      
-        firebase.database().ref(url)
-        .push({
-            uid:user.uid,
-            matchId:matchId,
-            homeScore:homeScore,
-            awayScore:awayScore
-        },(data)=>{
-            Alert.alert('Saved');
-        });
-    }
+export const savePrediction = (matchId, homeScore, awayScore) => {
+  return (dispatch) => {
+    const user = firebase.auth().currentUser
+    let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL
+
+    firebase.database().ref(url)
+      .push({
+        uid: user.uid,
+        matchId: matchId,
+        homeScore: homeScore,
+        awayScore: awayScore
+      }, (data) => {
+        Alert.alert('Saved')
+      })
+  }
 }
