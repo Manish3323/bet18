@@ -1,4 +1,4 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL } from './types'
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL,LOGOUT, CLEANUP } from './types'
 import firebase from 'firebase'
 import {Actions} from 'react-native-router-flux'
 
@@ -43,23 +43,41 @@ export const loginSuccess = (user) => {
   * @desc also in both the cases redux store is udpdated by dispatching corresponding actions
 */
 export const loginAction = (email, password) => {
-  console.log(email, password)
+  if (email && password) {
+    return (dispatch) => {
+      dispatch({type: LOGIN_PROCESS})
+      firebase.auth().signInWithEmailAndPassword(email, password)
+        .then(user => {
+          dispatch({type: LOGIN_SUCCESS, payload: user})
+          Actions.dashboard()
+        })
+        .catch(() => {
+          firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then(user => {
+              dispatch({type: LOGIN_SUCCESS, payload: user})
+              Actions.dashboard()
+            })
+            .catch(err =>
+              dispatch({type: LOGIN_FAIL,payload: err})
+            )
+        })
+    }
+  } else {
+    return (dispatch) => dispatch({type: LOGIN_FAIL})
+  }
+}
+
+/**
+  * @desc logs out user from firebase auth() if logged in
+  * @desc cleanup action is dispatched which remove user related redux store data
+*/
+export const logoutAction = () => {
   return (dispatch) => {
-    dispatch({type: LOGIN_PROCESS})
-    firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => {
-        dispatch({type: LOGIN_SUCCESS, payload: user})
-        Actions.dashboard()
+    if (firebase.auth().currentUser) {
+      firebase.auth().signOut().then(() => {
+        dispatch({type: LOGOUT});
+        dispatch({type: CLEANUP})
       })
-      .catch(() => {
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(user => {
-            dispatch({type: LOGIN_SUCCESS, payload: user})
-            Actions.dashboard()
-          })
-          .catch(err =>
-            dispatch({type: LOGIN_FAIL,payload: err})
-          )
-      })
+    } 
   }
 }

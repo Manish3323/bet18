@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOAD_PREDICTIONS } from '../actions/types'
+import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOAD_PREDICTIONS, CLEANUP } from '../actions/types'
 
 const INITIAL_STATE = {
   matches: {},
@@ -31,8 +31,10 @@ export default  GameReducer = (state = INITIAL_STATE, action) => {
     }
 
     case LOAD_PREDICTIONS : {
-      console.log(action.payload)
       return { ...state, predictions: action.payload }
+    }
+    case CLEANUP : {
+      return { ...state, predictions:[] }
     }
     default: return state
   }

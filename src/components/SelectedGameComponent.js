@@ -7,21 +7,34 @@ import { homeScoreChange, awayScoreChange, savePrediction, updatePrediction, loa
 import { Button } from 'react-native-elements'
 
 class SelectedGameComponent extends Component {
+  /**
+   * user predictions each time this component is mounted
+   */
   componentWillMount () {
     this.props.loadPredictions()
   }
+  /**
+   * detects home team score changes and updates store property:  state.Game.selectedGame.homeScore
+   */
   homeScoreChange (text) {
     this.props.homeScoreChange(text)
   }
+  /**
+   * detects away team score changes and updates store property:  state.Game.selectedGame.awayScore
+   */
   awayScoreChange (text) {
     this.props.awayScoreChange(text)
   }
+  /**
+   * @desc updates or save prediction if  prediction is already present for a particular match
+   * @desc saves prediction if predictionKey is not found i.e. there is no prediction entry for this selectedGame by current user
+   * @desc updates prediction if predictionKey is found
+   */
   updatePrediction () {
-    console.log(this.props)
     const { matchId, homeScore, awayScore, predictionKey, defaultAwayScore, defaultHomeScore } = this.props
     let score1 = homeScore || defaultHomeScore
     let score2 = awayScore || defaultAwayScore
-    if (predictionKey == '') {
+    if (predictionKey === '') {
       this.props.savePrediction(matchId, score1, score2)
     } else {
       this.props.updatePrediction(matchId, score1, score2, predictionKey)

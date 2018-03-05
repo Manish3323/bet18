@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import { emailChanged, passwordChanged, loginAction } from '../actions'
-import { Card, Input, Spinner, CardSection, Button } from './common'
+import { emailChanged, passwordChanged, loginAction, logoutAction } from '../actions'
+import { Card, Input, Spinner, CardSection } from './common'
 import { connect } from 'react-redux'
-
+import { styles } from '../styles/LoginformStyles'
+import { Button } from 'react-native-elements'
 class LoginForm extends Component {
+  componentWillMount () {
+    if (this.props.action && this.props.action === 'logout') {
+      this.props.logoutAction();
+    }
+  }
+  
   onButtonPress () {
     const { email, password } = this.props
     this.props.loginAction(email, password)
@@ -19,22 +26,21 @@ class LoginForm extends Component {
     if (this.props.loading) {
       return <Spinner size="small"/>
     }
-    return <Button onPress={this.onButtonPress.bind(this)} buttontext="Log In" />
+    return <Button raised color="cyan" onPress={this.onButtonPress.bind(this)} title="Log In" />
   }
 
   render () {
     const { email, password, error } = this.props
-    const { cardStyle, cardSectionStyle } = styles
     return (
-      <Card style={cardStyle}>
-        <CardSection style={ cardSectionStyle }>
-          <Input label="email" value={email} placeholder="User@gmail.com" onChangeText={this.onEmailChangeText.bind(this)}/>
+      <Card cardStyle={cardStyle}>
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <Input label="Email" propsLabelstyle={labelStyle} value={email} placeholder="User@gmail.com" onChangeText={this.onEmailChangeText.bind(this)}/>
         </CardSection>
-        <CardSection style={ cardSectionStyle }>
-          <Input label="password" password={true} value={password} placeholder="Password" onChangeText={ this.onPasswordChangeText.bind(this) } />
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <Input propsLabelstyle={labelStyle} label="Password" password={true} value={password} placeholder="Password" onChangeText={ this.onPasswordChangeText.bind(this) } />
         </CardSection>
-        <Text style={styles.errorStyle}>{error}</Text>
-        <CardSection style={ cardSectionStyle }>
+        <Text style={errorStyle}>{error}</Text>
+        <CardSection cardSectionStyle={cardSectionStyle}>
           {this.renderButton()}
         </CardSection>
       </Card>
@@ -53,36 +59,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const styles = StyleSheet.create({
-  errorStyle: {
-    fontSize: 20,
-    alignSelf: 'center',
-    color: 'red'
-  },
-  cardStyle: {
-    borderWidth: 1,
-    borderRadius: 2,
-    borderColor: '#ddd',
-    borderBottomWidth: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 2,
-    elevation: 2,
-    marginLeft: 5,
-    marginRight: 5,
-    marginTop: 10
-  },
-  cardSectionStyle: {
-    borderBottomWidth: 1,
+const { errorStyle, cardStyle, cardSectionStyle, labelStyle } = styles
 
-    padding: 5,
-    backgroundColor: '#fff',
-    justifyContent: 'space-around',
-    flexDirection: 'row',
-    borderColor: '#ddd',
-    position: 'relative'
-  }
-})
 
-export default connect(mapStateToProps, { emailChanged, passwordChanged, loginAction })(LoginForm)
+export default connect(mapStateToProps, { emailChanged, passwordChanged, loginAction,logoutAction })(LoginForm)
