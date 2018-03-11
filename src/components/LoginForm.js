@@ -5,8 +5,10 @@ import { Card, Input, Spinner, CardSection } from './common'
 import { connect } from 'react-redux'
 import { styles } from '../styles/LoginformStyles'
 import { Button } from 'react-native-elements'
+
 class LoginForm extends Component {
   componentWillMount () {
+    console.log(this.props)
     if (this.props.action && this.props.action === 'logout') {
       this.props.logoutAction();
     }

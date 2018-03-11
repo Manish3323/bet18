@@ -1,6 +1,5 @@
 import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL,LOGOUT, CLEANUP } from './types'
 import firebase from 'firebase'
-import {Actions} from 'react-native-router-flux'
 
 /**
   * @desc text changes are updated to store
@@ -49,16 +48,18 @@ export const loginAction = (email, password) => {
       firebase.auth().signInWithEmailAndPassword(email, password)
         .then(user => {
           dispatch({type: LOGIN_SUCCESS, payload: user})
-          Actions.dashboard()
         })
-        .catch(() => {
+        .catch((err) => {
+          console.log(err)
           firebase.auth().createUserWithEmailAndPassword(email, password)
             .then(user => {
               dispatch({type: LOGIN_SUCCESS, payload: user})
-              Actions.dashboard()
+             
             })
-            .catch(err =>
+            .catch(err =>{
+              console.log(err) 
               dispatch({type: LOGIN_FAIL,payload: err})
+            }
             )
         })
     }

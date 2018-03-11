@@ -2,20 +2,21 @@ import React, { Component } from 'react'
 import { ScrollView, ListView, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { List,ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 import { loadGames, selectGame, loadTeams } from '../actions/GameAction'
 import GameComponent from './GameComponent'
 import { Spinner } from './common'
 import { ObjectsToArray, findByProp, convertDateTimeToDate, convertDateTimeToTime } from '../Utility';
-
+import  { ListStyles } from '../styles/ListStyle'
 class MatchesList extends Component {
   
   componentWillMount () {
     if (this.dataSource !== undefined && this.dataSource &&  this.dataSource.length > 0) {
       this.wrapUpProperties()
     } else {
-      this.props.loadGames({groupCode: '', matchId: ''})
-      this.props.loadTeams()
+        this.props.loadGames({groupCode: '', matchId: ''})
+        if(this.props.teams.length === 0){
+          this.props.loadTeams()
+        }
     }
   }
 
@@ -24,19 +25,18 @@ class MatchesList extends Component {
   }
   wrapUpProperties = () => {
     if(this.props.matches !== undefined && this.props.matches  &&  this.props.matches.length > 0){
-      this.dataSource = this.props.matches[0].matches.map((match) => {
+      const listFromProps = findByProp(this.props.matches,'key',this.props.groupCode); // very imp
+      this.dataSource =  listFromProps[0].matches.map((match) => {
         const { name, home_team, away_team,date } = match;
         const { teams } = this.props; 
         return {
-            matchId:name,
+            matchId: name,
             homeTeam: findByProp(teams,'id',home_team) || " ",
             awayTeam: findByProp(teams,'id',away_team) || " ",
             date: convertDateTimeToDate(date,'DD/MM/YYYY'),
             time: convertDateTimeToTime(date,'HH:mm')
         }
       })
-
-        console.log('ih',this.dataSource);
     }
 }
 
@@ -48,28 +48,29 @@ renderText(teamsText){
   }
 }
 onRowSelect(match){
-    this.props.selectGame(match);
-    Actions.selectedGame();
+  this.props.selectGame(match);
+  this.props.navigator.push({
+    screen: 'SelectedGame',
+    title: 'Match No '+match.matchId
+  })
 }
  
   renderList () {
-    const { ListViewStyle } = styles
+    const { listItemStyle }  = ListStyles
        return ( 
           this.dataSource.map((match, id) => {
             const { matchId, date, time, homeTeam, awayTeam } = match;
-            return <ListItem key={matchId} title={"Game : "+matchId} onPress={this.onRowSelect.bind(this,match)}
+            return <ListItem style={ listItemStyle } key={matchId} title={"Game : "+matchId} onPress={this.onRowSelect.bind(this,match)}
                   subtitle={ date + "-" + time + ": " + this.renderText(homeTeam) + " V/S " + this.renderText(awayTeam) }  />
             })
       )
   }
 
     render () {
-      const { ListViewStyle } = styles
-     
+      const { listStyle }  = ListStyles
       if (this.dataSource !== undefined && this.dataSource.length > 0) {
-        console.log(this.dataSource)
         return ( 
-          <List>
+          <List style={ listStyle }>
             {this.renderList()} 
           </List>
         )
@@ -80,14 +81,8 @@ onRowSelect(match){
 }
 
 const mapStateToProps = (state) => {
-console.log(state.Game)
-  return {...state, matches: ObjectsToArray(state.Game.matches),teams:state.Game.teams}
+  const { matches, groupCode, teams } = state.Game
+  return { ...state, matches: matches, groupCode: groupCode, teams: teams }
 }
 
 export default connect(mapStateToProps, {loadGames, selectGame, loadTeams})(MatchesList)
-
-const styles = StyleSheet.create({
-  ListViewStyle: {
-    alignContent: 'center'
-  }
-});

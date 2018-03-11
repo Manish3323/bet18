@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { View, Text } from 'react-native'
+import { Modal, View, Text } from 'react-native'
 import { Card, CardSection, NumberInput } from './common'
 import { searchArrayByObjectKey, findByProp } from '../Utility'
 import { homeScoreChange, awayScoreChange, savePrediction, updatePrediction, loadPredictions } from '../actions/GameAction'
@@ -13,6 +13,7 @@ class SelectedGameComponent extends Component {
   componentWillMount () {
     this.props.loadPredictions()
   }
+
   /**
    * detects home team score changes and updates store property:  state.Game.selectedGame.homeScore
    */
@@ -45,18 +46,17 @@ class SelectedGameComponent extends Component {
     const { homeScore, awayScore, homeTeam, awayTeam, defaultHomeScore, defaultAwayScore } = this.props
 
     return (
-      <View>
-        <View style={{flexDirection: 'row'}}>
-          <CardSection>
-            <Text>{homeTeam.name}</Text>
-          </CardSection>
-          <NumberInput defaultValue={defaultHomeScore} value={homeScore} onChangeText={this.homeScoreChange.bind(this)}/>
-          <Text> : </Text>
-          <NumberInput defaultValue={defaultAwayScore} value={awayScore} onChangeText={this.awayScoreChange.bind(this)}/>
-          <CardSection>
-            <Text>{awayTeam.name}</Text>
-          </CardSection>
-        </View>
+
+      <View >
+        <CardSection>
+          <Text>{homeTeam.name}</Text>
+        </CardSection>
+        <NumberInput defaultValue={defaultHomeScore} value={homeScore} onChangeText={this.homeScoreChange.bind(this)}/>
+        <Text> : </Text>
+        <NumberInput defaultValue={defaultAwayScore} value={awayScore} onChangeText={this.awayScoreChange.bind(this)}/>
+        <CardSection>
+          <Text>{awayTeam.name}</Text>
+        </CardSection>
         <View>
           <Button title="Save Prediction" onPress={this.updatePrediction.bind(this)}></Button>
         </View>
@@ -65,6 +65,7 @@ class SelectedGameComponent extends Component {
   }
 }
 const mapStateToProps = (state) => {
+  console.log(state, 'in selected game components')
   const { selectedGame, predictions } = state.Game
   const currentGame = findByProp(predictions, 'matchId', selectedGame.matchId)
   if (currentGame) {

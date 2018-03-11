@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID } from './types'
 import firebase from 'firebase'
 import { ObjectsToArray } from '../Utility'
 import { Alert } from 'react-native'
@@ -150,5 +150,12 @@ export const savePrediction = (matchId, homeScore, awayScore) => {
     return (dispatch) => {
       Alert.alert('Type Valid Scores')
     }
+  }
+}
+
+export const selectGroupCode = (groupCode) => {
+  return {
+    type: SET_CURRENT_GROUPID,
+    payload: groupCode
   }
 }

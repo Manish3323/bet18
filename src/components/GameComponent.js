@@ -3,14 +3,13 @@ import { View, Text,TouchableWithoutFeedback } from 'react-native';
 import { Card, CardSection } from './common';
 import { connect } from 'react-redux';
 import { selectGame } from '../actions/GameAction';
-import { Actions } from 'react-native-router-flux';
+
 import { findByProp,convertDateTimeToDate,convertDateTimeToTime } from '../Utility';
 
 class GameComponent extends Component{
    
     onRowSelect(){
         this.props.selectGame(this.componentObject);
-        Actions.selectedGame();
     }
     componentWillMount(){
         this.componentObject = {}
@@ -19,7 +18,7 @@ class GameComponent extends Component{
     componentWillReceiveProps(){
         this.wrapUpProperties();
     }
-    wrapUpProperties =()=> {
+    wrapUpProperties = () => {
         const { name, home_team, away_team,date } = this.props.match;
         const { teams } = this.props; 
         this.componentObject = {
