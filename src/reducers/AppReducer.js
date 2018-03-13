@@ -6,7 +6,6 @@ const initialState = Immutable({
 })
 
 export default function app (state = initialState, action = {}) {
-  console.log(action)
   switch (action.type) {
     case ROOT_CHANGED:
       return state.merge({

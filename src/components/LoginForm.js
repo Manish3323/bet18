@@ -1,18 +1,14 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import { emailChanged, passwordChanged, loginAction, logoutAction } from '../actions'
 import { Card, Input, Spinner, CardSection } from './common'
 import { connect } from 'react-redux'
 import { styles } from '../styles/LoginformStyles'
 import { Button } from 'react-native-elements'
+import { LOGIN } from '../actions/types';
 
 class LoginForm extends Component {
-  componentWillMount () {
-    console.log(this.props)
-    if (this.props.action && this.props.action === 'logout') {
-      this.props.logoutAction();
-    }
-  }
+
   
   onButtonPress () {
     const { email, password } = this.props
@@ -28,24 +24,33 @@ class LoginForm extends Component {
     if (this.props.loading) {
       return <Spinner size="small"/>
     }
-    return <Button raised color="cyan" onPress={this.onButtonPress.bind(this)} title="Log In" />
+    return <Button raised color="cyan" onPress={this.onButtonPress.bind(this)} title={LOGIN} />
   }
 
   render () {
     const { email, password, error } = this.props
     return (
-      <Card cardStyle={cardStyle}>
-        <CardSection cardSectionStyle={cardSectionStyle}>
-          <Input label="Email" propsLabelstyle={labelStyle} value={email} placeholder="User@gmail.com" onChangeText={this.onEmailChangeText.bind(this)}/>
-        </CardSection>
-        <CardSection cardSectionStyle={cardSectionStyle}>
-          <Input propsLabelstyle={labelStyle} label="Password" password={true} value={password} placeholder="Password" onChangeText={ this.onPasswordChangeText.bind(this) } />
-        </CardSection>
-        <Text style={errorStyle}>{error}</Text>
-        <CardSection cardSectionStyle={cardSectionStyle}>
-          {this.renderButton()}
-        </CardSection>
-      </Card>
+      <View>
+        <Card cardStyle={cardStyle}>
+          <CardSection cardSectionStyle={cardSectionStyle}>
+            <Input label="Email" propsLabelstyle={labelStyle} value={email} placeholder="User@gmail.com" onChangeText={this.onEmailChangeText.bind(this)}/>
+          </CardSection>
+          <CardSection cardSectionStyle={cardSectionStyle}>
+            <Input propsLabelstyle={labelStyle} label="Password" password={true} value={password} placeholder="Password" onChangeText={ this.onPasswordChangeText.bind(this) } />
+          </CardSection>
+          <Text style={errorStyle}>{error}</Text>
+          <CardSection cardSectionStyle={cardSectionStyle}>
+            {this.renderButton()}
+          </CardSection>
+        </Card>
+        <Card style={registerCard}>
+          <CardSection>
+            <TouchableOpacity onPress={()=> this.props.navigator.push({screen: 'RegisterForm', title: 'Create Account'})}>
+              <Text> Create An Account ? </Text>
+            </TouchableOpacity>
+          </CardSection>
+        </Card>
+      </View>
     )
   }
 }
@@ -61,7 +66,5 @@ const mapStateToProps = (state) => {
   }
 }
 
-const { errorStyle, cardStyle, cardSectionStyle, labelStyle } = styles
-
-
+const { errorStyle, cardStyle, cardSectionStyle, labelStyle, registerCard } = styles
 export default connect(mapStateToProps, { emailChanged, passwordChanged, loginAction,logoutAction })(LoginForm)

@@ -1,4 +1,4 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL,LOGOUT, CLEANUP } from './types'
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL, LOGOUT, CLEANUP, INCORRECT_CREDENTIALS, REGISTER_USER_PROCESS, REGISTER_FAIL, REGISTER_USER_SUCCESS, INVALID_PASSWORDS, CURRENT_PASSWORD_CHANGED } from './types'
 import firebase from 'firebase'
 
 /**
@@ -20,7 +20,15 @@ export const passwordChanged = (text) => {
     payload: text
   }
 }
-
+/**
+  * @desc text changes are updated to store
+*/
+export const currentPasswordChanged = (text) => {
+  return {
+    type: CURRENT_PASSWORD_CHANGED,
+    payload: text
+  }
+}
 /**
   * @desc login status is updated in  store
 */
@@ -51,20 +59,27 @@ export const loginAction = (email, password) => {
         })
         .catch((err) => {
           console.log(err)
-          firebase.auth().createUserWithEmailAndPassword(email, password)
-            .then(user => {
-              dispatch({type: LOGIN_SUCCESS, payload: user})
-             
-            })
-            .catch(err =>{
-              console.log(err) 
-              dispatch({type: LOGIN_FAIL,payload: err})
-            }
-            )
+          dispatch({type: LOGIN_FAIL, payload: err})
         })
     }
   } else {
-    return (dispatch) => dispatch({type: LOGIN_FAIL})
+    return (dispatch) => dispatch({type: INCORRECT_CREDENTIALS})
+  }
+}
+/**
+  * @desc creates a new user in firebase
+  * @returns newly created user
+  */
+export const registerUser = (email, password) => {
+  return (dispatch) => {
+    dispatch({type: REGISTER_USER_PROCESS})
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then(user => {
+        dispatch({type: REGISTER_USER_SUCCESS, payload: user})
+      }).catch(err => {
+        console.log(err)
+        dispatch({type: REGISTER_FAIL, payload: err.message})
+      })
   }
 }
 
@@ -76,9 +91,27 @@ export const logoutAction = () => {
   return (dispatch) => {
     if (firebase.auth().currentUser) {
       firebase.auth().signOut().then(() => {
-        dispatch({type: LOGOUT});
+        dispatch({type: LOGOUT})
         dispatch({type: CLEANUP})
       })
-    } 
+    }
+  }
+}
+/**
+  * @desc updates store with error in case of incorrect password and confirmpassword text
+*/
+export const invalidPasswords = () => {
+  return {
+    type: INVALID_PASSWORDS,
+    payload: 'Passwords must match'
+  }
+}
+/**
+  * @desc updates store  error in case of incorrect email and password
+*/
+export const incorrectCredentials = () => {
+  return {
+    type: INCORRECT_CREDENTIALS,
+    payload: 'Enter Valid Data'
   }
 }

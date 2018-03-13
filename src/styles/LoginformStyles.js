@@ -20,5 +20,10 @@ export const styles = StyleSheet.create({
   labelStyle: {
     color: '#489878',
     fontSize: 20
+  },
+  registerCard:{
+    alignItems: 'center',
+    alignSelf: 'center',
+    color: '#578'
   }
 })

@@ -24,12 +24,12 @@ class App extends Component {
     let {icons} = store.getState().icon
     const user = store.getState().Auth.user
 
-    if (!user && root !== 'register') {
+    if (!user) {
       root = 'login'
     } else {
       root = 'after-login'
     }
-
+   
     if (this.currentRoot !== root && root) {
       this.currentRoot = root
       this.startApp(root, icons)
@@ -49,21 +49,6 @@ class App extends Component {
               drawUnderNavBar: false,
               navBarHidden: true,
               statusBarTextColorScheme: 'light'
-            }
-          }
-        })
-        return
-      case 'register':
-        Navigation.startSingleScreenApp({
-          screen: {
-            screen: 'LoginScreen',
-            title: 'register',
-            icon: icons.home,
-            label: 'Bet 18',
-            navigatorStyle: {
-              drawUnderNavBar: false,
-              navBarHidden: true,
-              statusBarTextColorScheme: 'dark'
             }
           }
         })
