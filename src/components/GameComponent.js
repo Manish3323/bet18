@@ -41,8 +41,8 @@ class GameComponent extends Component{
         return(
             <TouchableWithoutFeedback onPress={this.onRowSelect.bind(this)}>
                 <View>
-                    <Card> 
-                        <CardSection style={{alignItems:'flex-start'}}>
+                    <Card cardStyle={{flex:1}}> 
+                        <CardSection cardStyle={{alignItems:'flex-start'}}>
                             <Text> Game {matchId}</Text> 
                             <Text> {date} - {time} </Text> 
                             <Text> { this.renderText(homeTeam) } V/S {  this.renderText(awayTeam) } </Text>

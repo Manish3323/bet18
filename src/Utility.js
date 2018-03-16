@@ -58,3 +58,14 @@ export const searchArrayByObjectKey = (obj, arr, objKey, keyInArray) => {
     }
   })
 }
+
+/**
+  * @desc search on the basis of dynamic MULTIPLE properties
+  * @param Array arr - array of objects to be searched
+  * @param string prop - property on which searching criteria to be applied
+  * @param string valueToMatch - searchString
+  * @return object if found else null
+*/
+// export const findByManyProps = (array, props, valuesToMatch) => {
+//   _.where(array, [props ])
+// }

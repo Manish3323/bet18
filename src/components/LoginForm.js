@@ -44,7 +44,7 @@ class LoginForm extends Component {
           </CardSection>
         </Card>
         <Card style={registerCard}>
-          <CardSection>
+          <CardSection cardSectionStyle={{alignItems: 'center'}}>
             <TouchableOpacity onPress={()=> this.props.navigator.push({screen: 'RegisterForm', title: 'Create Account'})}>
               <Text> Create An Account ? </Text>
             </TouchableOpacity>

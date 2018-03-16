@@ -5,7 +5,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import { Card, CardSection } from '../common'
-import { ROOT_CHANGED } from '../../actions/types'
+import { ROOT_CHANGED, MODE_LIST } from '../../actions/types'
 import { changeAppRoot, logoutAction } from '../../actions'
 
 class ContextMenu extends Component {
@@ -13,13 +13,22 @@ class ContextMenu extends Component {
     this.props.logoutAction();
     this.props.changeAppRoot('login')
   }
+  onButtonPressPredict = () => {
+    
+    this.props.navigator.push({
+      screen:'SelectedGame',
+      passProps:{mode:MODE_LIST}
+    })
+  }
   render () {
     const { viewStyle, cardStyle, logoutCard } = styles
     return (
       <View style={viewStyle}>
         <Card style={ cardStyle }>
           <CardSection>
-            <Text> My Predictions</Text>
+            <TouchableOpacity onPress={this.onButtonPressPredict.bind(this)}>
+             <Text> My Predictions</Text>
+            </TouchableOpacity>
           </CardSection>
         </Card>
         <Card style={ cardStyle }>

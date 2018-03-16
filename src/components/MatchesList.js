@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ScrollView, ListView, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { List,ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
-import { loadGames, selectGame, loadTeams } from '../actions/GameAction'
+import { loadGames, selectGame } from '../actions/GameAction'
 import GameComponent from './GameComponent'
 import { Spinner } from './common'
 import { ObjectsToArray, findByProp, convertDateTimeToDate, convertDateTimeToTime } from '../Utility';
@@ -14,9 +14,9 @@ class MatchesList extends Component {
       this.wrapUpProperties()
     } else {
         this.props.loadGames({groupCode: '', matchId: ''})
-        if(this.props.teams.length === 0){
-          this.props.loadTeams()
-        }
+        // if(this.props.teams.length === 0){
+        //   this.props.loadTeams()
+        // }
     }
   }
 
@@ -26,7 +26,8 @@ class MatchesList extends Component {
   wrapUpProperties = () => {
     if(this.props.matches !== undefined && this.props.matches  &&  this.props.matches.length > 0){
       const listFromProps = findByProp(this.props.matches,'key',this.props.groupCode); // very imp
-      this.dataSource =  listFromProps[0].matches.map((match) => {
+      console.log(listFromProps);
+      this.dataSource =  listFromProps.matches.map((match) => {
         const { name, home_team, away_team,date } = match;
         const { teams } = this.props; 
         return {
@@ -48,10 +49,10 @@ renderText(teamsText){
   }
 }
 onRowSelect(match){
-  this.props.selectGame(match);
+  this.props.selectGame(match,groupCode);
   this.props.navigator.push({
     screen: 'SelectedGame',
-    title: 'Match No '+match.matchId
+    title: 'Group '+this.props.groupCode + ' - Match No' +match.matchId
   })
 }
  
@@ -60,7 +61,7 @@ onRowSelect(match){
        return ( 
           this.dataSource.map((match, id) => {
             const { matchId, date, time, homeTeam, awayTeam } = match;
-            return <ListItem style={ listItemStyle } key={matchId} title={"Game : "+matchId} onPress={this.onRowSelect.bind(this,match)}
+            return <ListItem style={ listItemStyle } key={matchId} title={"Game : "+matchId} onPress={this.onRowSelect.bind(this,match,this.props.groupCode)}
                   subtitle={ date + "-" + time + ": " + this.renderText(homeTeam) + " V/S " + this.renderText(awayTeam) }  />
             })
       )
@@ -85,4 +86,4 @@ const mapStateToProps = (state) => {
   return { ...state, matches: matches, groupCode: groupCode, teams: teams }
 }
 
-export default connect(mapStateToProps, {loadGames, selectGame, loadTeams})(MatchesList)
+export default connect(mapStateToProps, {loadGames, selectGame})(MatchesList)

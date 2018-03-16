@@ -34,3 +34,9 @@ export const SET_CURRENT_GROUPID = 'SET_CURRENT_GROUPID'
 export const CHECK_NET_INFO = 'CHECK_NET_INFO'
 export const ADD_ICON = 'ADD_ICON'
 export const ROOT_CHANGED = 'ROOT_CHANGED'
+
+
+// app constants
+export const MODE_LIST = 'MODE_LIST'
+export const MODE_SINGLE = 'MODE_SINGLE'
+export const LOADING = 'LOADING'

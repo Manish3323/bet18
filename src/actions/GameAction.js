@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING } from './types'
 import firebase from 'firebase'
 import { ObjectsToArray } from '../Utility'
 import { Alert } from 'react-native'
@@ -22,6 +22,7 @@ export const loadGames = ({groupCode, matchId}) => {
     firebase.database().ref(url)
       .on('value', (snapshot) => {
         let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOADING})
         dispatch({type: LOAD_GAMES, payload: array})
       })
   }
@@ -35,9 +36,11 @@ export const loadGames = ({groupCode, matchId}) => {
 export const loadTeams = () => {
   let url = TEAMS_URL
   return (dispatch) => {
+   
     firebase.database().ref(url)
       .on('value', (snapshot) => {
         let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOADING})
         dispatch({type: LOAD_TEAMS, payload: array})
       })
   }
@@ -46,10 +49,10 @@ export const loadTeams = () => {
   * @desc this action is called when a single match is selected
   * @desc which updates the redux store having Game.selectedGame property
 */
-export const selectGame = (match) => {
+export const selectGame = (match,groupCode) => {
   return {
     type: SELECT_GAME,
-    payload: match
+    payload: {match: match, groupCode: groupCode}
   }
 }
 
@@ -65,6 +68,7 @@ export const loadPredictions = () => {
     firebase.database().ref(url)
       .on('value', (snapshot) => {
         let array = ObjectsToArray(snapshot.val())
+        dispatch({type: LOADING})
         dispatch({type: LOAD_PREDICTIONS, payload: array})
       })
   }
