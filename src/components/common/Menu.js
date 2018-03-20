@@ -9,15 +9,18 @@ import { ROOT_CHANGED, MODE_LIST } from '../../actions/types'
 import { changeAppRoot, logoutAction } from '../../actions'
 
 class ContextMenu extends Component {
+
   onButtonPress = () => {
     this.props.logoutAction();
     this.props.changeAppRoot('login')
   }
   onButtonPressPredict = () => {
-    
-    this.props.navigator.push({
-      screen:'SelectedGame',
-      passProps:{mode:MODE_LIST}
+
+    this.props.navigator.resetTo({
+      screen:'PredictionsScreen',
+      title:'My Predictions',
+      animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
+      animationType: 'fade',
     })
   }
   render () {
@@ -66,4 +69,7 @@ const styles = StyleSheet.create({
 
 })
 
-export default connect(null,{ changeAppRoot,logoutAction })(ContextMenu)
+const mapStateToProps = (state)=>{
+  return state
+}
+export default connect(mapStateToProps,{ changeAppRoot,logoutAction })(ContextMenu)

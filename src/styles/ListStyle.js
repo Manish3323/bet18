@@ -7,5 +7,10 @@ export const ListStyles = StyleSheet.create({
   },
   listItemStyle: {
     backgroundColor: '#888'
+  },
+  redirectTextStyle:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 })

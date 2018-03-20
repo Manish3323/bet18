@@ -69,3 +69,7 @@ export const searchArrayByObjectKey = (obj, arr, objKey, keyInArray) => {
 // export const findByManyProps = (array, props, valuesToMatch) => {
 //   _.where(array, [props ])
 // }
+
+export const orderBykey = (arr, key, type) => {
+  return _.orderBy(arr, key, type);
+}

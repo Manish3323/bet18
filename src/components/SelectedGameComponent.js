@@ -1,32 +1,24 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Modal, View, Text } from 'react-native'
-import { Card, CardSection, NumberInput,Spinner } from './common'
-import { searchArrayByObjectKey, findByProp } from '../Utility'
+import { Card, CardSection, NumberInput, Spinner } from './common'
+import { findByProp } from '../Utility'
 import { homeScoreChange, awayScoreChange, savePrediction, updatePrediction, loadPredictions } from '../actions/GameAction'
 import { Button, List, ListItem } from 'react-native-elements'
-import { MODE_LIST } from '../actions/types'
-import { ListStyles } from '../styles/ListStyle'
 
 class SelectedGameComponent extends Component {
-  /**
-   * user predictions each time this component is mounted
-   */
-  componentWillMount () {
-    this.listView = false
-    if (this.props.mode !== undefined && this.props.mode === MODE_LIST) {
-      this.listView = true
-      this.setupDataSource()
+  constructor (props) {
+    super(props)
+    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
+  }
+  onNavigatorEvent (event) {
+    if (event.id === 'bottomTabSelected') {
+      this.props.navigator.resetTo({
+        animated: true,
+        animationType: 'fade',
+        screen: 'drawerScreen'
+      })
     }
-  }
-  componentWillReceiveProps () {
-    this.setupDataSource();
-  }
-  setupDataSource (){
-    // let completeArray = this.props.matches.map(match => {
-    //   findByProp(teams,'id',matches)
-    // })
-    this.dataSource = this.props.matches
   }
   /**
    * detects home team score changes and updates store property:  state.Game.selectedGame.homeScore
@@ -46,48 +38,25 @@ class SelectedGameComponent extends Component {
    * @desc updates prediction if predictionKey is found
    */
   updatePrediction () {
-    const { matchId, homeScore, awayScore, predictionKey, defaultAwayScore, defaultHomeScore } = this.props
+    const { homeScore, awayScore, predictionKey, defaultAwayScore, defaultHomeScore, groupCode, match } = this.props
     let score1 = homeScore || defaultHomeScore
     let score2 = awayScore || defaultAwayScore
     if (predictionKey === '') {
-      this.props.savePrediction(matchId, score1, score2)
+      this.props.savePrediction(match.matchId, score1, score2, groupCode, match.homeTeam, match.awayTeam)
     } else {
-      this.props.updatePrediction(matchId, score1, score2, predictionKey)
+      this.props.updatePrediction(match.matchId, score1, score2, predictionKey, groupCode, match.homeTeam, match.awayTeam)
     }
   }
-  renderList () {
-    if(this.dataSource){
-      const { listStyle, listItemStyle } = ListStyles
-      return (
-        <List style={ listStyle }>
-          <View style={listItemStyle}>{
-            this.dataSource.map((match, id) => {
-              return this.singleComponent(match)
-            })
-          }
-          </View>
-        </List>
-      )
-    } else {
-      return <Spinner size="small" />
-    }
-  }
-  renderListOrSingle () {
-    if (!this.listView) {
-      return (this.singleComponent(this.props))
-    } else {
-      return (
-          this.renderList()
-      )
-    }
-  }
+
   render () {
     return (
-      this.renderListOrSingle()
+      this.singleComponent(this.props)
     )
   }
-  singleComponent = (match) => {
-    const { groupCode, homeScore, awayScore, homeTeam, awayTeam, defaultHomeScore, defaultAwayScore } = match
+
+  singleComponent (currentGame) {
+    const { homeScore, awayScore, defaultHomeScore, defaultAwayScore } = currentGame
+    const { homeTeam, awayTeam } = currentGame.match
     return (
       <View style={{flex: 1}}>
         <Card cardStyle={{flexDirection: 'row', height: 120}} >
@@ -106,17 +75,18 @@ class SelectedGameComponent extends Component {
     )
   }
 }
-mapStateToProps = (state) => {
-  const { selectedGame, predictions,matches } = state.Game
-  if( selectedGame.matchId !== undefined){
-    const currentGame = findByProp(predictions, 'matchId', selectedGame.matchId)
-    const uniqueMatchesDetail = findByProp(matches,'key',selectedGame.groupCode) 
-    const {home_team,away_team} = findByProp(uniqueMatchesDetail,'matchId',selectedGame.matchId)
-    const { homeTeam } = findByProp(teams,'id',home_team)
-    const { awayTeam } = findByProp(teams,'id',away_team)
-    return { ...selectedGame, matches: predictions, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
-  } else {
-    return { ...selectedGame, matches: predictions, predictionKey: '', defaultHomeScore: '', defaultAwayScore: '' }
-  } 
+
+const mapStateToProps = (state) => {
+  const { selectedGame, predictions, groupCode } = state.Game
+  const { match } = selectedGame
+  if (match !== undefined) {
+    const currentGame = findByProp(predictions, 'matchId', match.matchId)
+    if (currentGame !== undefined) {
+      return {...selectedGame, match: match, groupCode: groupCode, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
+    } else {
+      return { ...selectedGame, match: match, matches: predictions, groupCode: groupCode, predictionKey: '', defaultHomeScore: '', defaultAwayScore: '' }
+    } 
+  }
 }
+
 export default connect(mapStateToProps, {homeScoreChange, awayScoreChange, savePrediction, updatePrediction, loadPredictions})(SelectedGameComponent)
