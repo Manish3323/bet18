@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, ListView, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { loadGames, selectGame } from '../actions/GameAction'
@@ -7,6 +7,8 @@ import GameComponent from './GameComponent'
 import { Spinner } from './common'
 import { ObjectsToArray, findByProp, convertDateTimeToDate, convertDateTimeToTime } from '../Utility'
 import { ListStyles } from '../styles/ListStyle'
+import { getImage } from '../Utility'
+
 class MatchesList extends Component {
   componentWillMount () {
     if (this.dataSource !== undefined && this.dataSource && this.dataSource.length > 0) {
@@ -59,8 +61,24 @@ class MatchesList extends Component {
     return (
       this.dataSource.map((match, id) => {
         const { matchId, date, time, homeTeam, awayTeam } = match
-        return <ListItem style={ listItemStyle } key={matchId} title={'Game : ' + matchId} onPress={this.onRowSelect.bind(this, match, this.props.groupCode)}
-          subtitle={ date + '-' + time + ': ' + this.renderText(homeTeam) + ' V/S ' + this.renderText(awayTeam) } />
+        const homeIcon = getImage(homeTeam.iso2)
+        const awayIcon = getImage(awayTeam.iso2)
+        return <ListItem style={ listItemStyle } key={matchId} title={
+          <View style={{flexDirection: 'row'}}>
+            <Text> {'Match : ' + matchId}</Text>
+            <View style={{alignItems: 'center', flexDirection: 'row', marginRight: 50}}>
+              <Image source={ homeIcon } style={{height: 20, width: 20}}/>
+              <Text> {' : '}</Text>
+              <Image source={ awayIcon } style={{height: 20, width: 20}}/>
+            </View>
+          </View>
+        }
+        onPress={this.onRowSelect.bind(this, match, this.props.groupCode)}
+        subtitle={
+          <View style={{flexDirection: 'row'}}>
+            <Text> {date + '-' + time + ': ' + this.renderText(homeTeam) + ' V/S ' + this.renderText(awayTeam) }</Text>
+          </View>
+        } />
       })
     )
   }

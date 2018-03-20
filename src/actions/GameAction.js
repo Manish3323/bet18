@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS } from './types'
 import firebase from 'firebase'
 import { ObjectsToArray } from '../Utility'
 import { Alert } from 'react-native'
@@ -64,27 +64,6 @@ export const loadPredictions = () => {
   const user = firebase.auth().currentUser
   let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL
   return (dispatch) => {
-  //   firebase.database().ref(url).on('value', (snapshot) => {
-  //     console.log('predictinos', snapshot.val())
-  //     if (!snapshot.val()) {
-  //       firebase.database().ref(GROUPS_URL + '/' + snapshot.val().groupCode).once('value', (snap) => {
-  //         console.log('match from group', snap.val())
-  //         const homeTeam = firebase.database().ref(TEAMS_URL).where('id', '==', snap.val().home_team).once((data) => {
-  //           console.log('corresponding home team', data.val())
-  //           return data.val().name
-  //         })
-  //         const awayTeam = firebase.database().ref(TEAMS_URL).where('id', '==', snap.val().away_team).once((data) => {
-  //           console.log('corresponding awway team', data.val())
-  //           return data.val().name
-  //         })
-  //         let array = ObjectsToArray({...snapshot.val(), homeTeam: homeTeam, awayTeam: awayTeam})
-  //         console.log('predictions payload ', array)
-  //         dispatch({type: LOADING})
-  //         dispatch({type: LOAD_PREDICTIONS, payload: array})
-  //       })
-  //     }
-  //   })
-  // }
     firebase.database().ref(url)
       .on('value', (snapshot) => {
         let array = ObjectsToArray(snapshot.val())
@@ -187,5 +166,16 @@ export const selectGroupCode = (groupCode) => {
   return {
     type: SET_CURRENT_GROUPID,
     payload: groupCode
+  }
+}
+
+export const loadUsers = () => {
+  const url = USERS_URL
+  return (dispatch) => {
+    firebase.database().ref(url).on('value',(snapshot)=>{
+      let array = ObjectsToArray(snapshot.val())
+      dispatch({type: LOADING})
+      dispatch({type: LOAD_USERS, payload: array})
+    })
   }
 }

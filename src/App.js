@@ -29,7 +29,7 @@ class App extends Component {
     } else {
       root = 'after-login'
     }
-   
+
     if (this.currentRoot !== root && root) {
       this.currentRoot = root
       this.startApp(root, icons)

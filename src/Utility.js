@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import moment from 'moment'
-
+import { IMAGES } from './helpers/flags'
 /**
   * @desc converts all the properties of object into an a Array of objects with key as index
   * @param object objects - containing similar objects with unique key or property
@@ -71,5 +71,9 @@ export const searchArrayByObjectKey = (obj, arr, objKey, keyInArray) => {
 // }
 
 export const orderBykey = (arr, key, type) => {
-  return _.orderBy(arr, key, type);
+  return _.orderBy(arr, key, type)
+}
+
+export const getImage = (iso2) => {
+  return IMAGES[iso2]
 }
