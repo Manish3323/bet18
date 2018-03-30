@@ -47,12 +47,12 @@ class GroupList extends Component {
 
 export default connect(mapStateToProps, {selectGroupCode,loadTeams,loadPredictions,loadUsers })(GroupList)
 const groupCodes = [
-    'a': 'A',
-    'b': 'B',
-    'c': 'C',
-    'd': 'D',
-    'e': 'E',
-    'f': 'F',
-    'g': 'G',
-    'h': 'H'
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h'
 ]

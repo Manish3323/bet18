@@ -1,4 +1,4 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL, LOGOUT, CLEANUP, INCORRECT_CREDENTIALS, REGISTER_USER_PROCESS, REGISTER_FAIL, REGISTER_USER_SUCCESS, INVALID_PASSWORDS, CURRENT_PASSWORD_CHANGED } from './types'
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL, LOGOUT, LOADING, CLEANUP, INCORRECT_CREDENTIALS, REGISTER_USER_PROCESS, REGISTER_FAIL, REGISTER_USER_SUCCESS, INVALID_PASSWORDS, CURRENT_PASSWORD_CHANGED, USER_ALREADY_LOGGED_IN } from './types'
 import firebase from 'firebase'
 
 /**
@@ -114,4 +114,16 @@ export const incorrectCredentials = () => {
     type: INCORRECT_CREDENTIALS,
     payload: 'Enter Valid Data'
   }
+}
+
+/**
+ * @desc checks if user already is logged in
+ */
+export const checkIfAlreadyLogin = () => {
+  return (dispatch) => {
+    dispatch({type: LOADING})
+    firebase.auth().onAuthStateChanged((user) => {
+      return dispatch({type: USER_ALREADY_LOGGED_IN, payload: user})
+    })
+  } 
 }

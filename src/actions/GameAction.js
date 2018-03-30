@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS, LOAD_REGISTERED_USERS } from './types'
 import firebase from 'firebase'
 import { ObjectsToArray } from '../Utility'
 import { Alert } from 'react-native'
@@ -116,7 +116,9 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
           awayScore: awayScore,
           groupCode: groupCode,
           homeTeam: homeTeam,
-          awayTeam: awayTeam
+          awayTeam: awayTeam,
+          userEmail: user.email,
+          userName: user.displayName
         }, (data) => {
           Alert.alert('Saved')
         })
@@ -150,7 +152,9 @@ export const savePrediction = (matchId, homeScore, awayScore, groupCode, homeTea
           awayScore: awayScore,
           groupCode: groupCode,
           homeTeam: homeTeam,
-          awayTeam: awayTeam
+          awayTeam: awayTeam,
+          userEmail: user.email,
+          userName: user.displayName
         }, (data) => {
           Alert.alert('Saved')
         })
@@ -172,8 +176,9 @@ export const selectGroupCode = (groupCode) => {
 export const loadUsers = () => {
   const url = USERS_URL
   return (dispatch) => {
-    firebase.database().ref(url).on('value',(snapshot)=>{
+    firebase.database().ref(url).on('value', (snapshot) => {
       let array = ObjectsToArray(snapshot.val())
+      // array = orderBykey(array, '', 'desc')
       dispatch({type: LOADING})
       dispatch({type: LOAD_USERS, payload: array})
     })
