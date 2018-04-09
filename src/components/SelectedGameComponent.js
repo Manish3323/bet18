@@ -82,7 +82,7 @@ const mapStateToProps = (state) => {
   if (match !== undefined) {
     const currentGame = findByProp(predictions, 'matchId', match.matchId)
     if (currentGame !== undefined) {
-      return {...selectedGame, match: match, groupCode: groupCode, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
+      return {...selectedGame, match: match, groupCode: match.groupCode, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
     } else {
       return { ...selectedGame, match: match, matches: predictions, groupCode: groupCode, predictionKey: '', defaultHomeScore: '', defaultAwayScore: '' }
     } 

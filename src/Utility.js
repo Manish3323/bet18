@@ -77,3 +77,7 @@ export const orderBykey = (arr, key, type) => {
 export const getImage = (iso2) => {
   return IMAGES[iso2]
 }
+
+export const getCurrentDateTime = () => {
+  return new Date().toLocaleString();
+}

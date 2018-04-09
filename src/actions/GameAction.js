@@ -1,8 +1,8 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS, LOAD_REGISTERED_USERS } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS, FINISHED_MATCHES_URL, UPDATE_POINTS_TO_PREDICTION } from './types'
 import firebase from 'firebase'
 import { ObjectsToArray } from '../Utility'
 import { Alert } from 'react-native'
-
+import { generatePoints, weightOfMatch } from '../helpers/score-generator'
 /**
  * @desc fetch games either for a group or a specific game by passing both matchid and groupid
  * @param {groupCode} groupCode e.g Group a,b,c...g
@@ -109,7 +109,7 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
       const user = firebase.auth().currentUser
       let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL + '/' + predictionKey
       firebase.database().ref(url)
-        .set({
+        .update({
           uid: user.uid,
           matchId: matchId,
           homeScore: homeScore,
@@ -118,7 +118,7 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
           homeTeam: homeTeam,
           awayTeam: awayTeam,
           userEmail: user.email,
-          userName: user.displayName
+          userName: user.email
         }, (data) => {
           Alert.alert('Saved')
         })
@@ -181,6 +181,33 @@ export const loadUsers = () => {
       // array = orderBykey(array, '', 'desc')
       dispatch({type: LOADING})
       dispatch({type: LOAD_USERS, payload: array})
+    })
+  }
+}
+
+export function calculatePoints () {
+  const currentUser = firebase.auth().currentUser
+  const url = USERS_URL + '/' + currentUser.uid + PREDICTIONS_URL
+  const finishedMatchesurl = FINISHED_MATCHES_URL  // must have a property named 'level' in each object
+  return (dispatch) => {
+    dispatch({type: LOADING})
+    firebase.database().ref(finishedMatchesurl).once('value', (snapshot) => {
+      const matches = ObjectsToArray(snapshot.val())
+      firebase.database().ref(url).once('value', (snapshot) => {
+        let predictionsArray = ObjectsToArray(snapshot.val())
+        let updatedPredictions = predictionsArray.map((prediction) => {
+          return matches.map((match) => {
+            if (match.matchId === prediction.matchId) {
+              let points = generatePoints({prediction, match})
+              let weightedPoints = points * weightOfMatch({match, points})
+              return {...prediction, weightedPoints, points}
+            } else {
+              return prediction
+            }
+          })[0]
+        })
+        dispatch({type: UPDATE_POINTS_TO_PREDICTION, payload: updatedPredictions})
+      })
     })
   }
 }

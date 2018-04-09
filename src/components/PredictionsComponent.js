@@ -23,10 +23,9 @@ class PredictionsComponent extends Component {
   }
 
   onRowSelect (match) {
-    this.props.selectGame(match)
+    this.props.selectGame(match, match.groupCode)
     this.props.navigator.push({
       screen: 'SelectedGame',
-      passProps: match,
       title: ' Group ' + match.groupCode + ' - Match No' + match.matchId
     }).catch((err) => {
       console.log(err)

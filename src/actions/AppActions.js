@@ -21,7 +21,7 @@ export function appInitialized () {
     dispatch(changeAppRoot(startRoot))
   }
 }
-
+ 
 export function checkNetInfo () {
   let request = NetInfo.isConnected.fetch()
   return {

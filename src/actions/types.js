@@ -24,6 +24,7 @@ export const PLAYERS_URL = '/players'
 export const GROUPS_URL = '/groups'
 export const USERS_URL = '/users'
 export const PREDICTIONS_URL = '/predictions'
+export const FINISHED_MATCHES_URL = '/finishedMatches'
 export const CLEANUP = 'CLEANUP'
 export const LOAD_GAMES = 'LOAD_GAMES'
 export const LOAD_USERS = 'LOAD_USERS'
@@ -31,11 +32,13 @@ export const LOAD_TEAMS = 'LOAD_TEAMS'
 export const SELECT_GAME = 'SELECT_GAME'
 export const LOAD_PREDICTIONS = 'LOAD_PREDICTIONS'
 export const SET_CURRENT_GROUPID = 'SET_CURRENT_GROUPID'
+export const UPDATE_POINTS_TO_PREDICTION = 'UPDATE_POINTS'
+
 //  app actions native -> react navigation root types
 export const CHECK_NET_INFO = 'CHECK_NET_INFO'
 export const ADD_ICON = 'ADD_ICON'
 export const ROOT_CHANGED = 'ROOT_CHANGED'
-
+export const CALCULATE_POINTS = 'CALCULATE_POINTS'
 
 // app constants
 export const MODE_LIST = 'MODE_LIST'

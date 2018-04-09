@@ -1,4 +1,4 @@
-import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOADING, SET_CURRENT_GROUPID, LOAD_PREDICTIONS, CLEANUP, LOAD_USERS, LOAD_REGISTERED_USERS } from '../actions/types'
+import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOADING, SET_CURRENT_GROUPID, LOAD_PREDICTIONS, CLEANUP, LOAD_USERS, CALCULATE_POINTS, UPDATE_POINTS_TO_PREDICTION } from '../actions/types'
 
 const INITIAL_STATE = {
   matches: {},
@@ -44,6 +44,12 @@ export default GameReducer = (state = INITIAL_STATE, action) => {
     }
     case LOAD_USERS : {
       return { ...state, users: action.payload }
+    }
+    case CALCULATE_POINTS : {
+      return { ...state, users: action.payload }
+    }
+    case UPDATE_POINTS_TO_PREDICTION : {
+      return { ...state, predictions: action.payload, loading: false }
     }
     default: return state
   }

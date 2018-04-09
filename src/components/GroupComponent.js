@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { ObjectsToArray } from '../Utility'
 import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
-import { selectGroupCode, loadTeams, loadPredictions,loadUsers } from '../actions/GameAction'
+import { selectGroupCode, loadTeams, loadPredictions,loadUsers,calculatePoints } from '../actions/GameAction'
 
 class GroupList extends Component {
   componentWillMount () {
@@ -11,6 +11,7 @@ class GroupList extends Component {
     this.props.loadTeams()
     this.props.loadPredictions()
     this.props.loadUsers()
+    this.props.calculatePoints()
   }
   onRowSelect (groupCode) {
     this.props.selectGroupCode(groupCode)
@@ -45,7 +46,7 @@ class GroupList extends Component {
 }
 
 
-export default connect(mapStateToProps, {selectGroupCode,loadTeams,loadPredictions,loadUsers })(GroupList)
+export default connect(mapStateToProps, {selectGroupCode,loadTeams,loadPredictions,loadUsers,calculatePoints })(GroupList)
 const groupCodes = [
     'a',
     'b',
