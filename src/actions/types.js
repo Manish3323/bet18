@@ -16,7 +16,7 @@ export const AWAY_SCORE_CHANGED = 'AWAY_SCORE_CHANGED'
 export const REGISTER_USER_SUCCESS = 'REGISTER_USER_SUCCESS'
 export const REGISTER_FAIL = 'REGISTER_FAIL'
 
-// game realted 
+// game realted
 export const TEAMS_URL = '/teams'
 export const KNOCKOUT_URL = '/knockout'
 export const STADIUMS_URL = '/stadiums'
@@ -46,3 +46,23 @@ export const MODE_SINGLE = 'MODE_SINGLE'
 export const LOADING = 'LOADING'
 export const LOAD_REGISTERED_USERS = 'LOAD_REGISTERED_USERS'
 export const USER_ALREADY_LOGGED_IN = 'USER_ALREADY_LOGGED_IN'
+
+// menu
+
+export const MENU = [
+  'My Predictions',
+  'LeaderBoard',
+  'Clans',
+  'Logout'
+]
+
+export const groupCodes = [
+  'a',
+  'b',
+  'c',
+  'd',
+  'e',
+  'f',
+  'g',
+  'h'
+]

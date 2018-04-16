@@ -1,71 +1,84 @@
 // your entry point
 
 import React, { Component } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity,Dimensions} from 'react-native'
 import { connect } from 'react-redux'
 import { Icon } from 'react-native-elements'
 import { Card, CardSection } from '../common'
-import { ROOT_CHANGED, MODE_LIST } from '../../actions/types'
+import { ROOT_CHANGED, MODE_LIST, MENU } from '../../actions/types'
 import { changeAppRoot, logoutAction } from '../../actions'
 
 class ContextMenu extends Component {
-
+ 
+  onButtonPress = (index) => {
+    switch (index) {
+      case 0 : 
+       this.props.navigator.resetTo({
+        screen:'PredictionsScreen',
+        title:'My Predictions',
+        animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
+        animationType: 'fade',
+      }); break;
+      case 1 : 
+        this.props.navigator.resetTo({
+          screen:'LeaderboardScreen',
+          title:'LeaderBoard',
+          animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
+          animationType: 'fade',
+        }); break;
+      case 2 :
+        this.props.navigator.resetTo({
+          screen: 'ClanScreen',
+          title: 'My Clans',
+          animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
+          animationType: 'fade',
+        }); break;
+      case 3 : 
+        this.props.logoutAction();
+        this.props.changeAppRoot('login'); break;
+    }
   
-  onButtonPress = () => {
-    this.props.logoutAction();
-    this.props.changeAppRoot('login')
   }
-  onButtonPressLeader = () => {
-    this.props.navigator.resetTo({
-      screen:'LeaderboardScreen',
-      title:'Leaders',
-      animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-      animationType: 'fade',
+ 
+  renderMenu = () => {
+    const length = MENU.length
+    return MENU.map((item,i)=>{
+      return ( 
+        <TouchableOpacity key={i} onPress={this.onButtonPress.bind(this, i)}>
+          <Card key={i} cardStyle={{width:(Dimensions.get('window').width / 2)}}>
+            <CardSection cardSectionStyle={{backgroundColor:'#b3d9ff'}} >
+              <Text> {item} </Text>
+            </CardSection>
+          </Card>
+        </TouchableOpacity>
+        )
     })
   }
-  onButtonPressPredict = () => {
-    this.props.navigator.resetTo({
-      screen:'PredictionsScreen',
-      title:'My Predictions',
-      animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-      animationType: 'fade',
+  toggleSideMenu () {
+    this.setState({
+      isOpen: !this.state.isOpen
     })
   }
-  render () {
-    const { viewStyle, cardStyle, logoutCard } = styles
+  showMenu = () => {
+    const { viewStyle } = styles
     return (
       <View style={viewStyle}>
-        <Card style={ cardStyle }>
-          <CardSection>
-            <TouchableOpacity onPress={this.onButtonPressPredict.bind(this)}>
-             <Text> My Predictions</Text>
-            </TouchableOpacity>
-          </CardSection>
-        </Card>
-        <Card style={ cardStyle }>
-          <CardSection>
-          <TouchableOpacity onPress={this.onButtonPressLeader.bind(this)}>
-            <Text> LeaderBoard </Text>
-            </TouchableOpacity>
-          </CardSection>
-        </Card>
-        <Card style={ logoutCard }>
-          <CardSection>
-            <TouchableOpacity onPress={this.onButtonPress.bind(this)}>
-              <Text> Logout </Text>
-            </TouchableOpacity>
-          </CardSection>
-        </Card>
+        {this.renderMenu()}
       </View>
+    )
+  }
+  render () {
+    return (
+     this.showMenu()
     )
   }
 }
 const styles = StyleSheet.create({
   viewStyle:{
+    flex:1,
     flexDirection: 'column',
     backgroundColor: 'rgba(255,255,255,0.6)',
-    marginTop: 50,
-    marginBottom: 50
+    alignItems:'flex-start',
   },
   iconStyle: {
     marginLeft: 50
@@ -83,3 +96,4 @@ const mapStateToProps = (state)=>{
   return state
 }
 export default connect(mapStateToProps,{ changeAppRoot,logoutAction })(ContextMenu)
+

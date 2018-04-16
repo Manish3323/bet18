@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import { loadGames, selectGame } from '../actions/GameAction'
 import GameComponent from './GameComponent'
 import { Spinner } from './common'
-import { ObjectsToArray, findByProp, convertDateTimeToDate, convertDateTimeToTime } from '../Utility'
+import { getImage, findByProp, convertDateTimeToDate, convertDateTimeToTime } from '../Utility'
 import { ListStyles } from '../styles/ListStyle'
-import { getImage } from '../Utility'
 
 class MatchesList extends Component {
   componentWillMount () {
@@ -15,9 +14,6 @@ class MatchesList extends Component {
       this.wrapUpProperties()
     } else {
       this.props.loadGames({groupCode: '', matchId: ''})
-      // if(this.props.teams.length === 0){
-      //   this.props.loadTeams()
-      // }
     }
   }
 
@@ -55,30 +51,32 @@ class MatchesList extends Component {
       title: 'Group ' + this.props.groupCode + ' - Match No' + match.matchId
     })
   }
-
+  getBackground (index) {
+    return index % 2 === 0 ? '#b3d9ff' : '#4da6ff'
+  }
   renderList () {
-    const { listItemStyle } = ListStyles
     return (
       this.dataSource.map((match, id) => {
         const { matchId, date, time, homeTeam, awayTeam } = match
         const homeIcon = getImage(homeTeam.iso2)
         const awayIcon = getImage(awayTeam.iso2)
-        return <ListItem style={ listItemStyle } key={matchId} title={
-          <View style={{flexDirection: 'row'}}>
-            <Text> {'Match : ' + matchId}</Text>
-            <View style={{alignItems: 'center', flexDirection: 'row', marginRight: 50}}>
-              <Image source={ homeIcon } style={{height: 20, width: 20}}/>
-              <Text> {' : '}</Text>
-              <Image source={ awayIcon } style={{height: 20, width: 20}}/>
+        return <ListItem containerStyle={ {backgroundColor: this.getBackground(this.dataSource.indexOf(match))}} key={matchId}
+          title={
+            <View style={{flexDirection: 'row'}}>
+              <Text> {'Match : ' + matchId}</Text>
+              <View style={{alignItems: 'center', flexDirection: 'row', marginRight: 50}}>
+                <Image source={ homeIcon } style={{height: 20, width: 20}}/>
+                <Text> {' : '}</Text>
+                <Image source={ awayIcon } style={{height: 20, width: 20}}/>
+              </View>
             </View>
-          </View>
-        }
-        onPress={this.onRowSelect.bind(this, match, this.props.groupCode)}
-        subtitle={
-          <View style={{flexDirection: 'row'}}>
-            <Text> {date + '-' + time + ': ' + this.renderText(homeTeam) + ' V/S ' + this.renderText(awayTeam) }</Text>
-          </View>
-        } />
+          }
+          onPress={this.onRowSelect.bind(this, match, this.props.groupCode)}
+          subtitle={
+            <View style={{flexDirection: 'row'}}>
+              <Text> {date + '-' + time + ': ' + this.renderText(homeTeam) + ' V/S ' + this.renderText(awayTeam) }</Text>
+            </View>
+          } />
       })
     )
   }
@@ -87,9 +85,11 @@ class MatchesList extends Component {
     const { listStyle } = ListStyles
     if (this.dataSource !== undefined && this.dataSource.length > 0) {
       return (
-        <List style={ listStyle }>
-          {this.renderList()}
-        </List>
+        <View style = {{flex: 1, backgroundColor: 'white'}}>
+          <List style={ listStyle }>
+            {this.renderList()}
+          </List>
+        </View>
       )
     } else {
       return (<Spinner size="large"/>)

@@ -4,14 +4,18 @@ import { ObjectsToArray } from '../Utility'
 import { List, ListItem } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { selectGroupCode, loadTeams, loadPredictions,loadUsers,calculatePoints } from '../actions/GameAction'
+import { GROUPLIST } from '../actions/StyleAction'
+import { fetchApiData, fetchLiveData } from '../helpers/fetchRealTime'
+import { groupCodes } from '../actions/types'
 
 class GroupList extends Component {
-  componentWillMount () {
+  async componentWillMount () {
     this.dataSource = groupCodes
-    this.props.loadTeams()
-    this.props.loadPredictions()
-    this.props.loadUsers()
-    this.props.calculatePoints()
+    fetchLiveData()
+    await this.props.loadTeams()
+    await this.props.loadPredictions()
+    await this.props.loadUsers()
+    await this.props.calculatePoints()
   }
   onRowSelect (groupCode) {
     this.props.selectGroupCode(groupCode)
@@ -20,40 +24,30 @@ class GroupList extends Component {
       title: 'Matches In Group '+groupCode.toUpperCase()
     })
   }
+  getBackground(index){
+    return index % 2 === 0 ? '#b3d9ff' : '#4da6ff' // this.getBackground(this.dataSource.indexOf(groupCode))
+  }
   renderList () {
     return (
       this.dataSource.map((groupCode) => {
-        return <ListItem key={ groupCode } title= { 'Group : ' + groupCode.toUpperCase() + ' Matches' } onPress = { this.onRowSelect.bind(this, groupCode) } />
+        return <ListItem containerStyle={{backgroundColor:this.getBackground(this.dataSource.indexOf(groupCode))}} key={ groupCode } title= { 'Group : ' + groupCode.toUpperCase() + ' Matches' } onPress = { this.onRowSelect.bind(this, groupCode) } />
       })
     )
   }
   render () {
-    if(!this.props.loading) {
       return (
+       <View style={{flex:1,backgroundColor:'#fff'}}> 
         <List>
           {this.renderList()}
         </List>
+        </View>
       )
-    } else {
-      return(
-        <Spinner size='large'/>
-      )
-    }
   }
   mapStateToProps = (state) => {
-    return { loading } = state.Game 
+    return state.Game 
   }
 }
 
 
 export default connect(mapStateToProps, {selectGroupCode,loadTeams,loadPredictions,loadUsers,calculatePoints })(GroupList)
-const groupCodes = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h'
-]
+

@@ -184,7 +184,11 @@ export const loadUsers = () => {
     })
   }
 }
-
+/**
+ * @description calculates points for finished matches on which user had predicted
+ * @description updates prediction with no points if match is not finished
+ * @description updates prediction with calculated points if it is finished.
+ */
 export function calculatePoints () {
   const currentUser = firebase.auth().currentUser
   const url = USERS_URL + '/' + currentUser.uid + PREDICTIONS_URL

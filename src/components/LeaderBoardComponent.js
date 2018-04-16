@@ -15,7 +15,12 @@ class LeaderBoard extends Component {
       this.props.navigator.resetTo({
         animated: true,
         animationType: 'fade',
-        screen: 'drawerScreen'
+        screen: 'drawerScreen',
+        navigatorStyle: {
+          drawUnderNavBar: false,
+          navBarTextColor: '#ffffff',
+          navBarBackgroundColor: '#006652'
+        }
       })
     }
   }

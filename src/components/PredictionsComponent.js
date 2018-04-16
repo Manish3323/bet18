@@ -31,12 +31,14 @@ class PredictionsComponent extends Component {
       console.log(err)
     })
   }
+  getBackground (index) {
+    return index % 2 === 0 ? '#b3d9ff' : '#4da6ff'
+  }
   renderSingleComponent (match) {
-    const { listItemStyle } = ListStyles
     const { matchId, homeScore, awayScore, homeTeam, awayTeam } = match
     const homeIcon = getImage(homeTeam.iso2)
     const awayIcon = getImage(awayTeam.iso2)
-    return <ListItem style={ listItemStyle }
+    return <ListItem containerStyle={{backgroundColor:this.getBackground(this.props.predictions.indexOf(match))}}
       key={matchId} onPress={this.onRowSelect.bind(this, match)}
       title={
         <View style={{flexDirection: 'row'}}>

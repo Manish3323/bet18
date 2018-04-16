@@ -7,6 +7,7 @@ import ContextMenu from '../components/common/Menu'
 import RegisterForm from '../components/RegisterForm'
 import PredictionsComponent from '../components/PredictionsComponent'
 import LeaderBoard from '../components/LeaderBoardComponent'
+import ClansComponent from '../components/ClansComponent'
 // register all screens of the app (including internal ones)
 export function registerScreens (store, provider) {
   // Navigation.registerComponent('bet18', () => App)
@@ -18,4 +19,6 @@ export function registerScreens (store, provider) {
   Navigation.registerComponent('RegisterForm', () => RegisterForm, store, provider)
   Navigation.registerComponent('PredictionsScreen', () => PredictionsComponent, store, provider)
   Navigation.registerComponent('LeaderboardScreen', () => LeaderBoard, store, provider)
+  Navigation.registerComponent('ClanScreen', () => ClansComponent, store, provider)
+  
 }
