@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import { emailChanged, passwordChanged, currentPasswordChanged, invalidPasswords, incorrectCredentials, registerUser } from '../actions'
+import { emailChanged, passwordChanged, firstNameChanged,lastNameChanged, displayNameChanged, currentPasswordChanged, invalidPasswords, incorrectCredentials, registerUser, mobileChanged } from '../actions'
 import { Card, Input, Spinner, CardSection } from './common'
 import { connect } from 'react-redux'
 import { styles } from '../styles/LoginformStyles'
 import { Button } from 'react-native-elements'
 import { SIGNUP } from '../actions/types'
+import { MobileInput } from './common/NumberInput';
 
 class RegisterForm extends Component {
   onButtonPress () {
-    const { email, password, currentPassword } = this.props
-    if (email && password) {
+    const { email, password, currentPassword, displayName, mobile, firstName, lastName } = this.props
+    if (email && password && displayName && mobile && firstName && lastName) {
       if (password === currentPassword) {
-        this.props.registerUser(email, password)
+        this.props.registerUser(email, password, displayName, mobile, firstName, lastName ) 
       } else {
         this.props.invalidPasswords()
       }
@@ -29,6 +30,18 @@ class RegisterForm extends Component {
   onCurrentPasswordChangeText (text) {
     this.props.currentPasswordChanged(text)
   }
+  onFirstNameChangeText (text) {
+    this.props.firstNameChanged(text)
+  }
+  onLastNameChangeText (text) {
+    this.props.lastNameChanged(text)
+  }
+  onDisplayNameChangeText (text) {
+    this.props.displayNameChanged(text)
+  }
+  onMobileChangeText (text) {
+    this.props.mobileChanged(text)
+  }
   renderButton () {
     if (this.props.loading) {
       return <Spinner size="small"/>
@@ -37,10 +50,22 @@ class RegisterForm extends Component {
   }
 
   render () {
-    const { email, password, confirmPassword, error } = this.props
+    const { email, password,firstName, confirmPassword, error, lastName, displayName, mobile } = this.props
     console.log(this.props)
     return (
       <Card cardStyle={cardStyle}>
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <Input label="First Name" propsLabelstyle={labelStyle} value={firstName} placeholder="john" onChangeText={this.onFirstNameChangeText.bind(this)}/>
+        </CardSection>
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <Input propsLabelstyle={labelStyle} label="Last Name" value={lastName} placeholder="Cena" onChangeText={ this.onLastNameChangeText.bind(this) } />
+        </CardSection>
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <Input propsLabelstyle={labelStyle} label="Display Name" value={displayName} placeholder="U_CAnT_see_ME" onChangeText={ this.onDisplayNameChangeText.bind(this) } />
+        </CardSection>
+        <CardSection cardSectionStyle={cardSectionStyle}>
+          <MobileInput propsLabelstyle={labelStyle} label="Mobile" value={mobile} placeholder="93424343411" onChangeText={ this.onMobileChangeText.bind(this) } />
+        </CardSection>
         <CardSection cardSectionStyle={cardSectionStyle}>
           <Input label="Email" propsLabelstyle={labelStyle} value={email} placeholder="User@gmail.com" onChangeText={this.onEmailChangeText.bind(this)}/>
         </CardSection>
@@ -60,7 +85,7 @@ class RegisterForm extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { email, password, currentPassword, error, loading, user } = state.Auth
+  const { email, password, currentPassword, error, loading, user, firstName, lastName, displayName, mobile } = state.Auth
   console.log(state.Auth)
   return {
     email: email,
@@ -68,10 +93,14 @@ const mapStateToProps = (state) => {
     error: error,
     loading: loading,
     user: user,
-    currentPassword: currentPassword
+    currentPassword: currentPassword,
+    firstName: firstName,
+    lastName: lastName,
+    displayName: displayName,
+    mobile: mobile
   }
 }
 
 const { errorStyle, cardStyle, cardSectionStyle, labelStyle } = styles
 
-export default connect(mapStateToProps, { emailChanged, passwordChanged, incorrectCredentials, registerUser, currentPasswordChanged, invalidPasswords })(RegisterForm)
+export default connect(mapStateToProps, { emailChanged, passwordChanged, firstNameChanged, lastNameChanged, displayNameChanged, mobileChanged, incorrectCredentials, registerUser, currentPasswordChanged, invalidPasswords })(RegisterForm)

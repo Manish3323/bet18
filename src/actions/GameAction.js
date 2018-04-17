@@ -108,6 +108,7 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
     return (dispatch) => {
       const user = firebase.auth().currentUser
       let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL + '/' + predictionKey
+      const currentTime = new Date().getTime()
       firebase.database().ref(url)
         .update({
           uid: user.uid,
@@ -118,7 +119,7 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
           homeTeam: homeTeam,
           awayTeam: awayTeam,
           userEmail: user.email,
-          userName: user.email
+          predictionTime: currentTime
         }, (data) => {
           Alert.alert('Saved')
         })
@@ -143,7 +144,7 @@ export const savePrediction = (matchId, homeScore, awayScore, groupCode, homeTea
     return (dispatch) => {
       const user = firebase.auth().currentUser
       let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL
-
+      const currentTime = new Date().getTime()
       firebase.database().ref(url)
         .push({
           uid: user.uid,
@@ -154,7 +155,7 @@ export const savePrediction = (matchId, homeScore, awayScore, groupCode, homeTea
           homeTeam: homeTeam,
           awayTeam: awayTeam,
           userEmail: user.email,
-          userName: user.displayName
+          predictionTime: currentTime
         }, (data) => {
           Alert.alert('Saved')
         })

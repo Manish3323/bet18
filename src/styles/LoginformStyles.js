@@ -2,15 +2,13 @@ import { StyleSheet } from 'react-native'
 
 export const styles = StyleSheet.create({
   cardStyle: {
-    alignSelf: 'center',
+    flexDirection: 'column',
     alignItems: 'center',
-    marginTop: 100
   },
   cardSectionStyle: {
     alignSelf: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-    backgroundColor:'transparent',
+    backgroundColor: 'transparent',
+    flexDirection: 'row'
   },
   errorStyle: {
     fontSize: 20,
@@ -19,7 +17,7 @@ export const styles = StyleSheet.create({
   },
   labelStyle: {
     color: '#489878',
-    fontSize: 20
+    fontSize: 16
   },
   registerCard:{
     alignItems: 'center',

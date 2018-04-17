@@ -24,7 +24,7 @@ class GroupList extends Component {
       title: 'Matches In Group '+groupCode.toUpperCase()
     })
   }
-  getBackground(index){
+  getBackground(index) {
     return index % 2 === 0 ? '#b3d9ff' : '#4da6ff' // this.getBackground(this.dataSource.indexOf(groupCode))
   }
   renderList () {

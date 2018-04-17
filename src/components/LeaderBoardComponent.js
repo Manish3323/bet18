@@ -24,15 +24,19 @@ class LeaderBoard extends Component {
       })
     }
   }
+  getBackground (index) {
+    return index % 2 === 0 ? '#b3d9ff' : '#4da6ff' 
+  }
   renderList () {
     return <List>
       {this.renderSingleComponent()}
     </List>
   }
   renderSingleComponent () {
-    return this.props.users.map((user) => {
+    return this.props.users.map((user, i) => {
       const { key } = user
-      return <ListItem key={key} title={key} onPress={() => console.log('user')} Component={UserComponent}>
+      return <ListItem key={key} containerStyle={{backgroundColor: this.getBackground(i)}}
+        title={key} onPress={() => console.log('user')} Component={UserComponent}>
       </ListItem>
     })
   }
