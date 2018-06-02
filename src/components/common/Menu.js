@@ -27,13 +27,20 @@ class ContextMenu extends Component {
           animationType: 'fade',
         }); break;
       case 2 :
+      this.props.navigator.resetTo({
+        screen: 'FinishedMatchesScreen',
+        title: 'Full Time Scores ',
+        animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
+        animationType: 'fade',
+      }); break;
+      case 3 :
         this.props.navigator.resetTo({
           screen: 'ClanScreen',
           title: 'My Clans',
           animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
           animationType: 'fade',
         }); break;
-      case 3 : 
+      case 4 : 
         this.props.logoutAction();
         this.props.changeAppRoot('login'); break;
     }

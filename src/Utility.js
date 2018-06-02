@@ -79,5 +79,9 @@ export const getImage = (iso2) => {
 }
 
 export const getCurrentDateTime = () => {
-  return new Date().toLocaleString();
+  return new Date().toLocaleString()
+}
+
+export const cloneDeep = (arr) => {
+  return _.cloneDeep(arr)
 }

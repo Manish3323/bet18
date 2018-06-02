@@ -5,8 +5,8 @@ import * as appActions from './actions/AppActions'
 import configureStore from './helpers/configure-store'
 import { registerScreens } from './Screens'
 
-const state = window.__initialState
-const store = configureStore(state)
+export const state = window.__initialState
+export const store = configureStore(state)
 
 // screen related book keeping
 registerScreens(store, Provider)
@@ -60,14 +60,13 @@ class App extends Component {
               label: 'Home',
               screen: 'dashboard',
               icon: icons.home,
-              title: 'Bet 18',
+              title: 'Bet 18'
             },
             {
               label: 'Menu',
               screen: 'drawerScreen',
               icon: icons.menu,
-              title: 'Menu',
-              
+              title: 'Menu'
             }
           ],
           drawer: {
@@ -75,7 +74,7 @@ class App extends Component {
               screen: 'drawerScreen', // unique ID registered with Navigation.registerScreen
               fixedWidth: 700 // a fixed width you want your left drawer to have (optional)
             },
-            style:{
+            style: {
               contentOverlayColor: 'rgba( 255, 255, 0, 1)'
             },
             animationType: 'door',
@@ -89,11 +88,11 @@ class App extends Component {
             tabBarBackgroundColor: '#006652', // change the background color of the tab bar
             tabBarTranslucent: false, // change the translucent of the tab bar to false
             forceTitlesDisplay: true, // Android only. If true - Show all bottom tab labels. If false - only the selected tab's label is visible.
-            tabBarHideShadow: false, //,
+            tabBarHideShadow: false, //
             drawUnderNavBar: false,
             navBarTextColor: '#ffffff',
             navBarBackgroundColor: '#006652'
-           
+
           }
         })
         return

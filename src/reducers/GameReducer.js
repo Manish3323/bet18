@@ -1,11 +1,12 @@
-import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOADING, SET_CURRENT_GROUPID, LOAD_PREDICTIONS, CLEANUP, LOAD_USERS, CALCULATE_POINTS, UPDATE_POINTS_TO_PREDICTION } from '../actions/types'
+import { LOAD_GAMES, SELECT_GAME, LOAD_TEAMS, HOME_SCORE_CHANGED, AWAY_SCORE_CHANGED, LOADING, SET_CURRENT_GROUPID, LOAD_PREDICTIONS, CLEANUP, LOAD_USERS, CALCULATE_POINTS, UPDATE_POINTS_TO_PREDICTION, LIVE_DATA } from '../actions/types'
 
 const INITIAL_STATE = {
   matches: {},
   selectedGame: {},
   teams: [],
   predictions: [],
-  users:[]
+  users: [],
+  groupCode: 0
 }
 
 export default GameReducer = (state = INITIAL_STATE, action) => {
@@ -50,6 +51,9 @@ export default GameReducer = (state = INITIAL_STATE, action) => {
     }
     case UPDATE_POINTS_TO_PREDICTION : {
       return { ...state, predictions: action.payload, loading: false }
+    }
+    case LIVE_DATA : {
+      return { ...state, liveFeed: action.payload }
     }
     default: return state
   }

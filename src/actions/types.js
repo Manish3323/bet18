@@ -37,6 +37,7 @@ export const SELECT_GAME = 'SELECT_GAME'
 export const LOAD_PREDICTIONS = 'LOAD_PREDICTIONS'
 export const SET_CURRENT_GROUPID = 'SET_CURRENT_GROUPID'
 export const UPDATE_POINTS_TO_PREDICTION = 'UPDATE_POINTS'
+export const LIVE_DATA = 'LIVE_DATA'
 
 //  app actions native -> react navigation root types
 export const CHECK_NET_INFO = 'CHECK_NET_INFO'
@@ -56,6 +57,7 @@ export const USER_ALREADY_LOGGED_IN = 'USER_ALREADY_LOGGED_IN'
 export const MENU = [
   'My Predictions',
   'LeaderBoard',
+  'Finished Matches',
   'Clans',
   'Logout'
 ]

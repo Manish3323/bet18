@@ -1,4 +1,7 @@
 import { findByProp } from '../Utility'
+import { setLiveData } from '../actions/index';
+import { LIVE_DATA } from '../actions/types';
+import { store } from '../App'
 export const apiList = {
   searchTeamByName: 'https://www.thesportsdb.com/api/v1/json/1/searchteams.php?t=',
   searchTeamUrlByShortCode: 'https://www.thesportsdb.com/api/v1/json/{APIKEY}/searchteams.php?sname=',
@@ -7,6 +10,7 @@ export const apiList = {
   searchTeamsFifa: 'https://www.thesportsdb.com/api/v1/json/1/search_all_teams.php?l=FIFA%20Premier%20League',
   liveScoreByLeague: 'https://www.thesportsdb.com/api/v1/json/1/latestsoccer.php'
 }
+
 export const fetchApiData = (param) => {
   return fetch(apiList['searchAllPlayersByTeam'] + param, {
     headers: {
@@ -18,7 +22,6 @@ export const fetchApiData = (param) => {
   })
 }
 
-
 export const fetchLiveData = () => {
   return fetch(apiList['liveScoreByLeague'], {
     headers: {
@@ -26,7 +29,8 @@ export const fetchLiveData = () => {
       'Content-Type': 'application/json'
     }
   }).then((res) => res.json()).then((data) => {
-    return findByProp(data.teams['Match'], 'League', 'FIFA World Cup')  // league id 4429 where League === FIFA World Cup
+    // const payload = findByProp(data.teams['Match'], 'League', 'Superettan')[0]  // league id 4429 where League === FIFA World Cup
+    store.dispatch({ type: LIVE_DATA, payload: data.teams['Match'] })
   }).catch((err) => {
     console.log(err)
   })
