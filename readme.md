@@ -1,10 +1,4 @@
-# Project Title
-
-Fifa World Cup 18 Fantasy app
-
-## Getting Started
-
-
+# Fifa World Cup 18 Fantasy app
 
 ### Prerequisites
 Node installed on machine
@@ -13,12 +7,12 @@ Any Code Editor
 
 ## Deployment
 
-cd $project_base
+* cd $project_base
 * Dev version
 react-native run-android  
 * Release version
 cd android/
-gradlew assembleRelease
+gradlew assembleRelease && cd .. && 
 react-native run-android --variant=release  
 
 ## Built With
@@ -45,5 +39,5 @@ Currently Single Contributor myself :D
 
 ## Acknowledgments
 
-* Prediction Model used by me and Friends in 2014 Fifa world Cup to play against each other
+* Prediction Model used by Me and My Friends in FIFA World cup 2014 to play against each other
 * Dream 11 Application
