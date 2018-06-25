@@ -6,4 +6,4 @@ export { Spinner } from './Spinner'
 export { CardSection } from './CardSection'
 export { NumberInput } from './NumberInput'
 export { ContextMenu } from './Menu'
-export { UserComponent } from './UserComponent'
+

@@ -1,6 +1,6 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL, LOGOUT, LOADING, CLEANUP, INCORRECT_CREDENTIALS, REGISTER_USER_PROCESS, REGISTER_FAIL, REGISTER_USER_SUCCESS, INVALID_PASSWORDS, CURRENT_PASSWORD_CHANGED, USER_ALREADY_LOGGED_IN, USERS_URL, FIRSTNAME_CHANGED, LASTNAME_CHANGED, DISPLAYNAME_CHANGED, MOBILE_CHANGED } from './types'
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_PROCESS, LOGIN_FAIL, LOGOUT, LOADING, CLEANUP, INCORRECT_CREDENTIALS, REGISTER_USER_PROCESS, REGISTER_FAIL, REGISTER_USER_SUCCESS, INVALID_PASSWORDS, CURRENT_PASSWORD_CHANGED, USER_ALREADY_LOGGED_IN, USERS_URL, FIRSTNAME_CHANGED, LASTNAME_CHANGED, DISPLAYNAME_CHANGED, MOBILE_CHANGED, PASSWORD_RESET_MAIL_SENT, PASSWORD_RESET_MAIL_FAILED } from './types'
 import firebase from 'firebase'
-
+import { Alert } from 'react-native'
 /**
   * @desc text changes are updated to store
 */
@@ -124,7 +124,7 @@ export const registerUser = (email, password, displayName, mobile, firstName, la
               email: email,
               mobile: mobile,
               creationTime: currentTime
-            }).then((res)=> {
+            }).then((res) => {
               console.log('data succesfully added')
             })
           }
@@ -177,6 +177,22 @@ export const checkIfAlreadyLogin = () => {
     dispatch({type: LOADING})
     firebase.auth().onAuthStateChanged((user) => {
       return dispatch({type: USER_ALREADY_LOGGED_IN, payload: user})
+    })
+  }
+}
+
+/**
+ * @desc checks if user already is logged in
+ */
+export const forgotPass = (email) => {
+  return (dispatch) => {
+    dispatch({type: LOADING})
+    firebase.auth().sendPasswordResetEmail(email).then((user) => {
+      Alert.alert(`Mail Sent Successfully!!
+        follow the link to reset password.`)
+      return dispatch({type: PASSWORD_RESET_MAIL_SENT})
+    }).catch((err) => {
+      return dispatch({type: PASSWORD_RESET_MAIL_FAILED, payload: err})
     })
   }
 }

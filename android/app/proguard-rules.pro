@@ -41,12 +41,24 @@
   *** get*();
 }
 
--keep class * extends com.facebook.react.bridge.JavaScriptModule { *; }
--keep class * extends com.facebook.react.bridge.NativeModule { *; }
+-keepclassmembers,includedescriptorclasses  class * extends com.facebook.react.bridge.JavaScriptModule { *; }
+-keepclassmembers,includedescriptorclasses  class * extends com.facebook.react.bridge.NativeModule { *; }
 -keepclassmembers,includedescriptorclasses class * { native <methods>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
+-keepclassmembers,includedescriptorclasses class *  { @com.facebook.react.uimanager.UIProp <fields>; }
+-keepclassmembers,includedescriptorclasses class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
+-keepclassmembers,includedescriptorclasses class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
+
+-keepclassmembers,includedescriptorclasses class *  { @com.reactnativenavigation.* <methods>; }
+-keepclassmembers,includedescriptorclasses class *  { @com.reactnativenavigation.* <methods>; }
+
+
+## Troubleshooting
+
+### Problems with Proguard
+
+###When Proguard is enabled (which it is by default for Android release builds), it can rename the `BuildConfig` Java class in the minification process and prevent React Native Config from referencing it. To avoid this, add an exception to `android/app/proguard-rules.pro`:
+
+-keep class com.bet18.BuildConfig { *; }
 
 -dontwarn com.facebook.react.**
 

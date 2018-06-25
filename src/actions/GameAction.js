@@ -1,6 +1,6 @@
-import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS, FINISHED_MATCHES_URL, UPDATE_POINTS_TO_PREDICTION, LIVE_DATA } from './types'
+import { LOAD_GAMES, SELECT_GAME, GROUPS_URL, TEAMS_URL, LOAD_TEAMS, AWAY_SCORE_CHANGED, PREDICTIONS_URL, HOME_SCORE_CHANGED, USERS_URL, LOAD_PREDICTIONS, SET_CURRENT_GROUPID, LOADING, LOAD_USERS, FINISHED_MATCHES_URL, UPDATE_POINTS_TO_PREDICTION, LIVE_DATA, PAST_DATA, FUTURE_DATA, SELECT_CURRENT_MATCH, NO_CURRENT_MATCHES } from './types'
 import firebase from 'firebase'
-import { ObjectsToArray } from '../Utility'
+import { ObjectsToArray, convertDateTimeToDate, getCurrentTime } from '../Utility'
 import { Alert } from 'react-native'
 /**
  * @desc fetch games either for a group or a specific game by passing both matchid and groupid
@@ -107,7 +107,7 @@ export const updatePrediction = (matchId, homeScore, awayScore, predictionKey, g
     return (dispatch) => {
       const user = firebase.auth().currentUser
       let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL + '/' + predictionKey
-      const currentTime = new Date().getTime()
+      const currentTime = convertDateTimeToDate(getCurrentTime(), 'DD/MM/YYYY HH:mm:ss')
       firebase.database().ref(url)
         .update({
           uid: user.uid,
@@ -143,7 +143,7 @@ export const savePrediction = (matchId, homeScore, awayScore, groupCode, homeTea
     return (dispatch) => {
       const user = firebase.auth().currentUser
       let url = USERS_URL + '/' + user.uid + PREDICTIONS_URL
-      const currentTime = new Date().getTime()
+      const currentTime = convertDateTimeToDate(getCurrentTime, 'DD/MM/YYYY HH:mm:ss')
       firebase.database().ref(url)
         .push({
           uid: user.uid,
@@ -218,11 +218,44 @@ export const loadUsers = () => {
 
 /**
  * @description setting live data feed on load of grouplist page to state.Game object
- * @param {*} data 
+ * @param {*} data
  */
 export const setLiveData = (data) => {
+  if (data === NO_CURRENT_MATCHES) {
+    return (dispatch) => {
+      dispatch({type: NO_CURRENT_MATCHES, payload: NO_CURRENT_MATCHES})
+    }
+  } else {
+    return (dispatch) => {
+      dispatch({type: LOADING})
+      dispatch({type: LIVE_DATA, payload: data})
+    }
+  }
+}
+/**
+ * @description setting future data feed on load of grouplist page to state.Game object
+ * @param {*} data
+ */
+export const setFutureData = (data) => {
+  return (dispatch) => {
+    dispatch({type: LOADING})
+    dispatch({type: FUTURE_DATA, payload: data})
+  }
+}
+/**
+ * @description setting PAST data feed on load of grouplist page to state.Game object
+ * @param {*} data
+ */
+export const setPastData = (data) => {
+  return (dispatch) => {
+    dispatch({type: LOADING})
+    dispatch({type: PAST_DATA, payload: data})
+  }
+}
+
+export const selectCurrentMatch = (match) => {
   return {
-    type: LIVE_DATA,
-    payload: data
+    type: SELECT_CURRENT_MATCH,
+    payload: match
   }
 }

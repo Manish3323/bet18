@@ -3,18 +3,19 @@ import promise from 'redux-promise'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import reducer from '../reducers'
+import { middleware } from '../AppNavigator'
+const middlewares = []
 
-const middleware = []
-
-middleware.push(promise)
-middleware.push(thunk)
+middlewares.push(middleware)
+middlewares.push(promise)
+middlewares.push(thunk)
 
 export default function configureStore (initialState) {
   if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'production') {
-    middleware.push(createLogger({collapsed: true}))
+    middlewares.push(createLogger({collapsed: true}))
   }
   const enhancer = compose(
-    applyMiddleware(...middleware)
+    applyMiddleware(...middlewares)
   )
 
   const store = createStore(

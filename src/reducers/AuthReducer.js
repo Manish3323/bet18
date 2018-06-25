@@ -1,4 +1,4 @@
-import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_FAIL, LOGIN_PROCESS, LOGOUT, REGISTER_USER_PROCESS, REGISTER_USER_SUCCESS, REGISTER_FAIL, INCORRECT_CREDENTIALS, CURRENT_PASSWORD_CHANGED, INVALID_PASSWORDS, USER_ALREADY_LOGGED_IN, LOADING, FIRSTNAME_CHANGED, LASTNAME_CHANGED, DISPLAYNAME_CHANGED, MOBILE_CHANGED } from '../actions/types'
+import { EMAIL_CHANGED, PASSWORD_CHANGED, LOGIN_SUCCESS, LOGIN_FAIL, LOGIN_PROCESS, LOGOUT, REGISTER_USER_PROCESS, REGISTER_USER_SUCCESS, REGISTER_FAIL, INCORRECT_CREDENTIALS, CURRENT_PASSWORD_CHANGED, INVALID_PASSWORDS, USER_ALREADY_LOGGED_IN, LOADING, FIRSTNAME_CHANGED, LASTNAME_CHANGED, DISPLAYNAME_CHANGED, MOBILE_CHANGED, PASSWORD_RESET_MAIL_SENT, PASSWORD_RESET_MAIL_FAILED } from '../actions/types'
 
 const INITIAL_STATE = {
   email: '',
@@ -25,7 +25,7 @@ export default AuthReducer = (state = INITIAL_STATE, action) => {
     case LOGOUT:
       return { ...state, user: null }
     case REGISTER_USER_PROCESS: {
-      return { ...state,loading: true }
+      return { ...state, loading: true }
     }
     case REGISTER_USER_SUCCESS: {
       return { ...state, email: '', password: '', error: '', loading: false, user: action.payload }
@@ -53,6 +53,10 @@ export default AuthReducer = (state = INITIAL_STATE, action) => {
       return { ...state, displayName: action.payload, error: '' } 
     case MOBILE_CHANGED:
       return { ...state, mobile: action.payload, error: '' } 
+    case PASSWORD_RESET_MAIL_SENT:
+      return { ...state, mailSent: action.payload, error: '' } 
+    case PASSWORD_RESET_MAIL_FAILED:
+      return { ...state, mailSent: action.payload, error: 'Couldn\'t Send Mail. Try Again!!' }
     default: return state
   }
 }

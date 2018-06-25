@@ -20,7 +20,7 @@ export const ObjectsToArray = (objects) => {
   * @return object if found else null
 */
 export const findByProp = (array, prop, valueToMatch) => {
-  return _.find(array, (item) => { return item[prop] === valueToMatch })
+  return _.find(array, (item) => { return item[prop] == valueToMatch })
 }
 /**
   * @desc converts long date to specified formatted date
@@ -28,18 +28,18 @@ export const findByProp = (array, prop, valueToMatch) => {
   * @returns date in specified format
 */
 export const convertDateTimeToDate = (dateTime, format) => {
-  return moment(dateTime).locale('in').format(format)
+  return moment(dateTime).format(format)
 }
 /**
   * @desc converts long date to specified formatted date
   * @param string format - format in which time to be displayed
   * @returns time in specified format
-*/
+*/  
 export const convertDateTimeToTime = (dateTime, format) => {
-  return moment(dateTime).locale('in').format(format)
+  return moment(dateTime).format(format)
 }
 
-/**
+/** 
   * @desc returns a object from list whose property is equal to the property of object
   * @desc optional property if not supplied object key will be used to compare objects in list
   * @param object obj - will be used to iterate over the list
@@ -84,4 +84,14 @@ export const getCurrentDateTime = () => {
 
 export const cloneDeep = (arr) => {
   return _.cloneDeep(arr)
+}
+
+export const arrayContainsItem = (arr, prop, value) => {
+  return _.find(arr, (item) => { return item[prop] == value })
+}
+
+
+export const getCurrentTime = () => {
+  console.log(moment())
+  return moment().valueOf()
 }

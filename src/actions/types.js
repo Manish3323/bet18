@@ -34,11 +34,14 @@ export const LOAD_GAMES = 'LOAD_GAMES'
 export const LOAD_USERS = 'LOAD_USERS'
 export const LOAD_TEAMS = 'LOAD_TEAMS'
 export const SELECT_GAME = 'SELECT_GAME'
+export const SELECT_CURRENT_MATCH = 'SELECT_CURRENT_MATCH'
 export const LOAD_PREDICTIONS = 'LOAD_PREDICTIONS'
 export const SET_CURRENT_GROUPID = 'SET_CURRENT_GROUPID'
 export const UPDATE_POINTS_TO_PREDICTION = 'UPDATE_POINTS'
 export const LIVE_DATA = 'LIVE_DATA'
-
+export const FUTURE_DATA = 'FUTURE_DATA'
+export const PAST_DATA = 'PAST_DATA'
+export const NO_CURRENT_MATCHES = 'NO_CURRENT_MATCHES'
 //  app actions native -> react navigation root types
 export const CHECK_NET_INFO = 'CHECK_NET_INFO'
 export const ADD_ICON = 'ADD_ICON'
@@ -51,7 +54,9 @@ export const MODE_SINGLE = 'MODE_SINGLE'
 export const LOADING = 'LOADING'
 export const LOAD_REGISTERED_USERS = 'LOAD_REGISTERED_USERS'
 export const USER_ALREADY_LOGGED_IN = 'USER_ALREADY_LOGGED_IN'
-
+export const PASSWORD_RESET_MAIL_SENT = 'PASSWORD_RESET_MAIL_SENT'
+export const PASSWORD_RESET_MAIL_FAILED = 'PASSWORD_RESET_MAIL_FAILED'
+export const SEND_MAIL = 'SEND MAIL'
 // menu
 
 export const MENU = [

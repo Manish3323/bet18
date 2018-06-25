@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Modal, View, Text, Image } from 'react-native'
+import { Modal, View, Text, Image, Alert } from 'react-native'
 import { Card, CardSection, NumberInput, Spinner } from './common'
 import { findByProp, getImage } from '../Utility'
 import { homeScoreChange, awayScoreChange, savePrediction, updatePrediction, loadPredictions } from '../actions/GameAction'
@@ -9,11 +9,24 @@ import { Button, List, ListItem } from 'react-native-elements'
 class SelectedGameComponent extends Component {
   constructor (props) {
     super(props)
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
+  }
+  state={
+    changeDetect:false
+  }
+  static navigationOptions =({navigation})=>{
+    console.log(navigation)
+    return {
+      title: navigation.state.params.title,
+      headerTitleStyle: {
+        fontSize: 20,
+        textAlign: 'center',
+        alignSelf: 'center'
+      }
+    }
   }
   onNavigatorEvent (event) {
     if (event.id === 'bottomTabSelected') {
-      this.props.navigator.resetTo({
+      this.props.navigation.resetTo({
         animated: true,
         animationType: 'fade',
         screen: 'drawerScreen'
@@ -24,13 +37,19 @@ class SelectedGameComponent extends Component {
    * detects home team score changes and updates store property:  state.Game.selectedGame.homeScore
    */
   homeScoreChange (text) {
-    this.props.homeScoreChange(text)
+    if (this.props.defaultHomeScore !== text) {
+      this.props.homeScoreChange(text)
+      this.setState({changeDetect: true})
+    }
   }
   /**
    * detects away team score changes and updates store property:  state.Game.selectedGame.awayScore
    */
   awayScoreChange (text) {
-    this.props.awayScoreChange(text)
+    if (this.props.defaultHomeScore !== text) {
+      this.props.awayScoreChange(text)
+      this.setState({changeDetect: true})
+    }
   }
   /**
    * @desc updates or save prediction if  prediction is already present for a particular match
@@ -41,10 +60,14 @@ class SelectedGameComponent extends Component {
     const { homeScore, awayScore, predictionKey, defaultAwayScore, defaultHomeScore, groupCode, match } = this.props
     let score1 = homeScore || defaultHomeScore
     let score2 = awayScore || defaultAwayScore
-    if (predictionKey === '') {
-      this.props.savePrediction(match.matchId, score1, score2, groupCode, match.homeTeam, match.awayTeam)
+    if (this.state.changeDetect) {
+      if (predictionKey === '') {
+        this.props.savePrediction(match.matchId, score1, score2, groupCode, match.homeTeam, match.awayTeam)
+      } else {
+        this.props.updatePrediction(match.matchId, score1, score2, predictionKey, groupCode, match.homeTeam, match.awayTeam)
+      }
     } else {
-      this.props.updatePrediction(match.matchId, score1, score2, predictionKey, groupCode, match.homeTeam, match.awayTeam)
+      Alert.alert('No updates found!')
     }
   }
 
@@ -60,28 +83,33 @@ class SelectedGameComponent extends Component {
     const homeIcon = getImage(homeTeam.iso2)
     const awayIcon = getImage(awayTeam.iso2)
     return (
-      <View style={{flex: 1,backgroundColor: 'white'}}>
-        <Card cardStyle={{flexDirection: 'row', backgroundColor: '#b3d9ff', alignItems: 'center', justifyContent: 'center'}}>
-          <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
-            <Image source={ homeIcon } style={{height: 20, width: 20}}/>
-            <Text>{homeTeam.name}</Text>
-          </CardSection>
-          <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
-            <NumberInput defaultValue={defaultHomeScore} value={homeScore} onChangeText={this.homeScoreChange.bind(this)}/>
-            <Text> : </Text>
-            <NumberInput defaultValue={defaultAwayScore} value={awayScore} onChangeText={this.awayScoreChange.bind(this)}/>
-          </CardSection>
-          <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
-            <Text>{awayTeam.name}</Text>
-            <Image source={ awayIcon } style={{height: 20, width: 20}}/>
-          </CardSection>
-        </Card>
-        <Card cardStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-          <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
-            <Button backgroundColor='#4da6ff' color='white' title="Save Prediction" onPress={this.updatePrediction.bind(this)}></Button>
-          </CardSection>
-        </Card>
-      </View>
+      <View style={{flex: 1, backgroundColor: 'white',alignItems: "stretch"}}>
+        <View  style={{flex: 1}} >
+          <Card cardStyle={{flexDirection: 'row', backgroundColor: '#b3d9ff', alignItems: 'center', justifyContent: 'center'}}>
+            <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
+              <Image source={ homeIcon } style={{height: 20, width: 20}}/>
+              <Text>{homeTeam.name}</Text>
+            </CardSection>
+            <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
+              <NumberInput defaultValue={defaultHomeScore} value={homeScore} onChangeText={this.homeScoreChange.bind(this)}/>
+              <Text> : </Text>
+              <NumberInput defaultValue={defaultAwayScore} value={awayScore} onChangeText={this.awayScoreChange.bind(this)}/>
+            </CardSection>
+            <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
+              <Text>{awayTeam.name}</Text>
+              <Image source={ awayIcon } style={{height: 20, width: 20}}/>
+            </CardSection>
+          </Card>
+          <Card cardStyle={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+            <CardSection cardSectionStyle={{backgroundColor: 'transparent'}}>
+              <Button backgroundColor='#4da6ff' color='white' title="Save Prediction" onPress={this.updatePrediction.bind(this)}></Button>
+              <Button backgroundColor='#4da6ff' color='white' title="Predictions of this Match" onPress={this.updatePrediction.bind(this)}></Button>
+            </CardSection>
+          </Card>
+        </View>
+        <Image source={getImage('bannerSrc')} resizeMode="contain"
+        style={{width: null, height: '20%',flexDirection:'row-reverse'}}/>
+        </View>
     )
   }
 }
@@ -92,7 +120,7 @@ const mapStateToProps = (state) => {
   if (match !== undefined) {
     const currentGame = findByProp(predictions, 'matchId', match.matchId)
     if (currentGame !== undefined) {
-      return {...selectedGame, match: match, groupCode: match.groupCode, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
+      return {...selectedGame, match: match, groupCode: groupCode, predictionKey: currentGame.key, defaultHomeScore: currentGame.homeScore, defaultAwayScore: currentGame.awayScore}
     } else {
       return { ...selectedGame, match: match, matches: predictions, groupCode: groupCode, predictionKey: '', defaultHomeScore: '', defaultAwayScore: '' }
     }

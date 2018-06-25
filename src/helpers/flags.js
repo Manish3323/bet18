@@ -252,6 +252,9 @@ export const IMAGES = {
   yt: require('../img/flags/yt.png'),
   za: require('../img/flags/za.png'),
   zm: require('../img/flags/zm.png'),
-  zw: require('../img/flags/zw.png')
-
+  zw: require('../img/flags/zw.png'),
+  bannerSrc: require('../img/bannerFifa2018.jpg'),
+  teamsLogoSrc: require('../img/teamsLogo.jpg'),
+  fifaLogoSrc: require('../img/fifaLogo.jpg'),
+  fifaCupBlackSrc: require('../img/worldCupBlack.png')
 }

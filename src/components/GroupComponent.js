@@ -4,16 +4,12 @@ import {  getImage,ObjectsToArray, findByProp, cloneDeep, convertDateTimeToDate,
 import { List, ListItem, Card } from 'react-native-elements'
 import MaterialTabs from 'react-native-material-tabs'
 import { connect } from 'react-redux'
-import { selectGroupCode, loadTeams,setLiveData,loadPredictions,loadUsers,calculatePoints, loadGames, selectGame } from '../actions/GameAction'
-import { GROUPLIST } from '../actions/StyleAction'
-import { fetchApiData, fetchLiveData } from '../helpers/fetchRealTime'
+import { selectGroupCode, loadTeams,loadPredictions,loadUsers,calculatePoints, loadGames, selectGame } from '../actions/GameAction'
 import { groupCodes } from '../actions/types'
 import { CardSection } from './common'
 import { ListStyles } from '../styles/ListStyle'
 import GameComponent from './GameComponent'
 import { Spinner } from './common'
-import FeedComponent from './FeedComponent';
-// import MaterialTabs from 'react-native-material-tabs';
 
 class GroupList extends Component {
   state = {
@@ -30,7 +26,6 @@ class GroupList extends Component {
     await this.props.loadTeams()
     await this.props.loadPredictions()
     await this.props.loadUsers()
-    await fetchLiveData()
   }
   componentWillReceiveProps(){
      this.wrapUpProperties()
@@ -58,16 +53,14 @@ class GroupList extends Component {
    
   render () {
       return (
-       <ScrollView style={{flex:1,backgroundColor:'#fff'}}> 
-       <List>
-        <Text style={{alignSelf:'center'}}>Matches</Text> 
-        {this.renderTabs()}
-       </List>
-        {this.renderMatchList()}
-        
-           <FeedComponent />
-          
+        <View  style={{flex:1,alignItems: "stretch"}}>
+        <ScrollView style={{backgroundColor:'#fff'}}> 
+            {this.renderTabs()}
+            {this.renderMatchList()}
         </ScrollView>
+        <Image source={getImage('bannerSrc')} resizeMode="contain"
+        style={{width: null, height: '20%',flexDirection:'row-reverse'}}/>
+        </View>
       )
   }
   
@@ -75,9 +68,8 @@ class GroupList extends Component {
     const { listStyle } = ListStyles
     if (this.state.dataSource !== undefined && this.state.dataSource.length > 0) {
       return (
-        <View style = {{flex: 1, backgroundColor: '#fff'}}>
+        <View style = {{flex: 1}}>
           <List style={ listStyle }>
-            <Text style={{alignSelf:'center'}}>Groups</Text>
             {this.renderList()}
           </List>
         </View>
@@ -115,10 +107,10 @@ class GroupList extends Component {
   }
   onRowSelect (match) {
     this.props.selectGame(match)
-    this.props.navigator.push({
-      screen: 'SelectedGame',
-      title: 'Group ' + groupCodes[this.props.groupCode] + ' - Match No' + match.matchId
-    })
+    this.props.navigation.navigate(
+       'SelectedGame',
+      { title: 'Group ' + groupCodes[this.props.groupCode].toUpperCase() + ' - Match No ' + match.matchId }
+    )
   }
   wrapUpProperties () {
     if (this.props.Game.matches !== undefined && this.props.Game.matches && this.props.Game.matches.length > 0) {
@@ -136,10 +128,9 @@ class GroupList extends Component {
       })
       )
       })
-      console.log(this.state.dataSource)
     }
   }
-  renderText (teamsText) {
+   renderText (teamsText) {
     if (teamsText !== undefined && teamsText !== null && teamsText !== ' ') {
       return teamsText.name
     } else {
@@ -155,7 +146,7 @@ const styles = StyleSheet.create({
 })
 const mapStateToProps = (state) => {
   const { matches, teams, groupCode } = state.Game
-  return { ...state, matches: matches, groupCode:groupCode, liveFeed:state.liveFeed, teams: teams }
+  return { ...state, matches: matches, groupCode:groupCode, teams: teams }
 }
 
 export default connect(mapStateToProps, {selectGroupCode,loadTeams,loadPredictions,loadGames, selectGame,loadUsers,calculatePoints })(GroupList)

@@ -13,36 +13,26 @@ class ContextMenu extends Component {
   onButtonPress = (index) => {
     switch (index) {
       case 0 : 
-       this.props.navigator.resetTo({
-        screen:'PredictionsScreen',
-        title:'My Predictions',
-        animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-        animationType: 'fade',
-      }); break;
+       this.props.navigation.navigate(
+      'Predictions',
+      ); break;
       case 1 : 
-        this.props.navigator.resetTo({
-          screen:'LeaderboardScreen',
-          title:'LeaderBoard',
-          animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-          animationType: 'fade',
-        }); break;
+        this.props.navigation.navigate(
+          'Leader',
+         ); break;
       case 2 :
-      this.props.navigator.resetTo({
-        screen: 'FinishedMatchesScreen',
-        title: 'Full Time Scores ',
-        animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-        animationType: 'fade',
-      }); break;
+      //   this.props.navigation.navigate(
+      //      'FinishedMatchesScreen',
+      //  );
+    break;
       case 3 :
-        this.props.navigator.resetTo({
-          screen: 'ClanScreen',
-          title: 'My Clans',
-          animated: true, // does the resetTo have transition animation or does it happen immediately (optional)
-          animationType: 'fade',
-        }); break;
+        // this.props.navigation.navigate(
+        //    'ClanScreen',
+        //  );
+          break;
       case 4 : 
         this.props.logoutAction();
-        this.props.changeAppRoot('login'); break;
+        this.props.navigation.navigate('LoginForm'); break;
     }
   
   }
@@ -84,8 +74,9 @@ const styles = StyleSheet.create({
   viewStyle:{
     flex:1,
     flexDirection: 'column',
-    backgroundColor: 'rgba(255,255,255,0.6)',
-    alignItems:'flex-start',
+    backgroundColor: '#4da6ff',
+    alignItems:'center',
+    justifyContent:'center'
   },
   iconStyle: {
     marginLeft: 50

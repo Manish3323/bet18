@@ -5,4 +5,9 @@
         <!-- Customize your theme here. -->
     </style>
 
+    
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@color/primary_dark</item>
+    </style>
+
 </resources>

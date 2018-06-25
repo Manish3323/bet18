@@ -1,57 +1,48 @@
 import React, { Component} from 'react'
 import { connect } from 'react-redux'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import { Card, CardSection, NumberInput, Spinner } from './common'
+import { Card, CardSection, NumberInput, Spinner, Button } from './common'
 import { ListStyles } from '../styles/ListStyle'
 import { homeScoreChange, awayScoreChange, savePrediction, selectGame, updatePrediction } from '../actions/GameAction'
-import { Button, List, ListItem } from 'react-native-elements'
+import { List, ListItem } from 'react-native-elements'
 import { orderBykey, getImage } from '../Utility'
+import { groupCodes } from '../actions/types'
 
 class PredictionsComponent extends Component {
-  constructor (props) {
-    super(props)
-    this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this))
-  }
-  onNavigatorEvent (event) {
-    if (event.id === 'bottomTabSelected') {
-      this.props.navigator.resetTo({
-        animated: true,
-        animationType: 'fade',
-        screen: 'drawerScreen'
-      })
-    }
-  }
 
   onRowSelect (match) {
     this.props.selectGame(match, match.groupCode)
-    this.props.navigator.push({
-      screen: 'SelectedGame',
-      title: ' Group ' + match.groupCode + ' - Match No' + match.matchId
-    }).catch((err) => {
-      console.log(err)
-    })
+    this.props.navigation.navigate(
+      'SelectedGame',
+      ' Group ' + groupCodes[match.groupCode].toUpperCase() + ' - Match' + match.matchId
+    )
   }
   getBackground (index) {
     return index % 2 === 0 ? '#b3d9ff' : '#4da6ff'
   }
   renderSingleComponent (match) {
-    const { matchId, homeScore, awayScore, homeTeam, awayTeam } = match
+    const { matchId, homeScore, awayScore, homeTeam, awayTeam, points = 0, finalHomeScore = 0, finalAwayScore = 0 } = match
     const homeIcon = getImage(homeTeam.iso2)
     const awayIcon = getImage(awayTeam.iso2)
-    return <ListItem containerStyle={{backgroundColor:this.getBackground(this.props.predictions.indexOf(match))}}
+    return <ListItem containerStyle={{backgroundColor: this.getBackground(this.props.predictions.indexOf(match))}}
       key={matchId} onPress={this.onRowSelect.bind(this, match)}
+      badge={{value: points}}
       title={
         <View style={{flexDirection: 'row'}}>
-          <Text>{'Match : ' + matchId}</Text>
           <View style={{alignItems: 'center', flexDirection: 'row', marginRight: 50}}>
+            <Text>{homeTeam.name}</Text>
             <Image source={ homeIcon } style={{height: 20, width: 20}}/>
             <Text> {' : '}</Text>
             <Image source={ awayIcon } style={{height: 20, width: 20}}/>
+            <Text>{awayTeam.name}</Text>
           </View>
         </View>
       }
       subtitle={
-        homeTeam.name + ' ' + homeScore + ' : ' + awayScore + ' ' + awayTeam.name
+        <View>
+          <Text>{' Predicted  => ' + homeScore + ' : ' + awayScore}</Text>
+          <Text>{' Final => ' + finalHomeScore + ' : ' + finalAwayScore}</Text>
+        </View>
       } />
   }
   renderList () {
@@ -67,10 +58,10 @@ class PredictionsComponent extends Component {
     )
   }
   goToUpcomingMatches () {
-    this.props.navigator.resetTo({
-      screen: 'dashboard',
-      title: 'DashBoard'
-    })
+    this.props.navigation.navigate(
+      'Recent',
+      { title: 'Updates' }
+    )
   }
   render () {
     const { redirectTextStyle } = ListStyles
@@ -82,9 +73,7 @@ class PredictionsComponent extends Component {
       )
     } if (this.props.predictions.length === 0) {
       return (
-        <TouchableOpacity style={redirectTextStyle} onPress={() => this.goToUpcomingMatches()}>
-          <Text> Go To Upcoming Matches </Text>
-        </TouchableOpacity>
+        <Button buttontext="Go To Upcoming Matches" bStyle={redirectTextStyle} onPress={() => this.goToUpcomingMatches.bind(this)}/>
       )
     } else {
       return (<Spinner size="large"/>)
