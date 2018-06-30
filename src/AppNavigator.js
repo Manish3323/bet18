@@ -95,10 +95,7 @@ const AuthStack = createStackNavigator({
 
 const BottomTabNavigator = createBottomTabNavigator({
   Settings: {
-    screen: Menu,
-    tabBarIcon: ({ focused, tintColor }) => {
-      return <Icons name={`ios-options${focused ? '' : '-outline'}`} iconSize={20} iconColor={tintColor} />
-    }
+    screen: Menu
   },
   Home: AppStack,
   Recent: {
